@@ -37,6 +37,8 @@ const Validation = React.lazy(() => import('../views/forms/validation/Validation
 
 const Charts = React.lazy(() => import('../views/charts/Charts'))
 const sso = React.lazy(() => import('../views/sso/sso'))
+const users = React.lazy(() => import('../views/users/Collection/Controller'))
+const user = React.lazy(() => import('../views/users/Model/Controller'))
 const Person1 = React.lazy(() => import('../views/identifier/person1'))
 
 // Icons
@@ -79,6 +81,8 @@ const routes = [
   { path: '/buttons/button-groups', name: 'Button Groups', component: ButtonGroups },
   { path: '/charts', name: 'SSO', component: Charts },
   { path: '/sso', name: 'Client', component: sso },
+  { path: '/users', name: 'Users', component: users },
+  { path: '/user', name: 'User', component: user },
   { path: '/person1', name: 'Person1', component: Person1 },
   { path: '/forms', name: 'Forms', component: FormControl, exact: true },
   { path: '/forms/form-control', name: 'Form Control', component: FormControl },

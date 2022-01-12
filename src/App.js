@@ -49,9 +49,7 @@ const App = () => {
   return (
     <React.Suspense fallback={loading}>
       <Switch>
-        {!isLogin && (
-          <Route path="/login" name="Login Page" render={(props) => <Login {...props} />} />
-        )}
+        {!isLogin && <Route path="/*" name="Login Page" render={(props) => <Login {...props} />} />}
         {!isLogin && (
           <Route
             exact

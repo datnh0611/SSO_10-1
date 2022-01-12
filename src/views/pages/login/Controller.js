@@ -17,7 +17,6 @@ const Controller = () => {
         method: 'POST',
         body: data,
       })
-      console.log('resp', resp)
       dispatch(authActions.login())
       history.push('/')
     } catch (error) {

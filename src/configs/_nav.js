@@ -190,6 +190,12 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Quản lý người dùng',
+    to: '/users',
+    icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Bên thứ ba (Client)',
     to: '/sso',
     icon: <CIcon icon={cilBank} customClassName="nav-icon" />,
