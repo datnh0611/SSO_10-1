@@ -40,6 +40,7 @@
     "@progress/kendo-react-intl": "^4.13.0",
     "@progress/kendo-theme-material": "^4.43.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.5",
+    "@reduxjs/toolkit": "^1.6.0",
     "chart.js": "^3.6.0",
     "classnames": "^2.3.1",
     "cldr-core": "^40.0.0",

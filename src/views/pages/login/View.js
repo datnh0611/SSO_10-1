@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -15,8 +16,22 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import useInput from '../../../hooks/use-input'
 
-const Login = () => {
+const View = (props) => {
+  const { value: username, onChange: onChangeUsername } = useInput()
+  const { value: password, onChange: onChangePassword } = useInput()
+
+  const submitHandler = (event) => {
+    console.log('clicked!')
+    event.preventDefault()
+    const data = {
+      username,
+      password,
+    }
+    props.onSubmit(data)
+  }
+
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -25,14 +40,19 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={submitHandler}>
                     <h1>Login</h1>
                     <p className="text-medium-emphasis">Sign In to your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        value={username}
+                        onChange={onChangeUsername}
+                        placeholder="Username"
+                        autoComplete="username"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -40,6 +60,8 @@ const Login = () => {
                       </CInputGroupText>
                       <CFormInput
                         type="password"
+                        value={password}
+                        onChange={onChangePassword}
                         placeholder="Password"
                         autoComplete="current-password"
                       />
@@ -51,7 +73,7 @@ const Login = () => {
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
+                        <CButton color="link" type="submit" className="px-0">
                           Forgot password?
                         </CButton>
                       </CCol>
@@ -83,4 +105,8 @@ const Login = () => {
   )
 }
 
-export default Login
+View.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+}
+
+export default View
