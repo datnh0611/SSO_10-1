@@ -1,14 +1,50 @@
 import React, { useState, useEffect } from 'react'
 import View from './View'
 import Config from 'src/configs/config'
+import formatingHelper from '../../../helpers/formatingHelper'
 
 const Controller = (props) => {
   const [users, setUsers] = useState([])
 
+  const apiEndpoint = 'user'
+  const apiPrefix = 'api/v1'
+
+  const fields = [
+    {
+      field: 'username',
+      label: 'Tên đăng nhập',
+    },
+
+    {
+      field: 'created_at',
+      label: 'Thời gian khởi tạo',
+      template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
+    },
+
+    {
+      field: 'last_login_at',
+      label: 'Lần đăng nhập gần nhất',
+      template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
+    },
+
+    {
+      field: 'status',
+      label: 'Trạng thái',
+      template: (rowObj) => <div>Online</div>,
+    },
+  ]
+
   useEffect(() => {
+    let isUnmount = true
     ;(async () => {
       try {
-        const req = await fetch(`${Config.url}/api/v1/user`, {
+        if (users.length) {
+          // USE CACHING TECHNIQUE TO OPTIMIZE WEB
+          console.log(!users.length)
+          console.log('Already load user!')
+          return
+        }
+        const req = await fetch(`${Config.url}/${apiPrefix}/${apiEndpoint}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -17,12 +53,24 @@ const Controller = (props) => {
             'Access-Control-Allow-Headers': 'Content-Type',
             // "token": reqConfig.token ? reqConfig.token : null
           },
+          credentials: 'include',
         })
-        if (!req.ok()) {
-          throw new Error(data.error_message || 'Có lỗi xảy ra!')
+        console.log(req)
+        if (!req.ok) {
+          throw new Error('Có lỗi xảy ra!')
         }
         const data = await req.json()
+        console.log('data', data)
+        if (!isUnmount) {
+          console.log('Component unmounted!')
+          return
+        }
         setUsers(data['results'])
+
+        return () => {
+          console.log('Clean up func!')
+          isUnmount = false
+        }
       } catch (error) {
         console.log(error)
         return
@@ -31,7 +79,7 @@ const Controller = (props) => {
     console.log('OK')
   }, [users])
 
-  return <View users={users || []} />
+  return <View fields={fields} data={users || []} navigateTo={`/${apiEndpoint}`} />
 }
 
 export default Controller

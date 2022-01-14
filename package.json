@@ -56,7 +56,8 @@
     "react-router-dom": "^5.3.0",
     "redux": "4.1.2",
     "sassy-datepicker": "^0.7.0",
-    "simplebar-react": "^2.3.6"
+    "simplebar-react": "^2.3.6",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "auto-changelog": "~2.3.0",

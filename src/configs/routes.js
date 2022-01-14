@@ -81,8 +81,12 @@ const routes = [
   { path: '/buttons/button-groups', name: 'Button Groups', component: ButtonGroups },
   { path: '/charts', name: 'SSO', component: Charts },
   { path: '/sso', name: 'Client', component: sso },
+  /**
+   * USER
+   */
   { path: '/users', name: 'Users', component: users },
   { path: '/user', name: 'User', component: user },
+  /*********/
   { path: '/person1', name: 'Person1', component: Person1 },
   { path: '/forms', name: 'Forms', component: FormControl, exact: true },
   { path: '/forms/form-control', name: 'Form Control', component: FormControl },
