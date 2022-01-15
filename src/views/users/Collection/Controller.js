@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import View from './View'
 import Config from 'src/configs/config'
 import formatingHelper from '../../../helpers/formatingHelper'
+import { reqHandler } from 'src/helpers/http-helper'
 
 const Controller = (props) => {
   const [users, setUsers] = useState([])
@@ -44,17 +45,10 @@ const Controller = (props) => {
           console.log('Already load users!')
           return
         }
-        const req = await fetch(`${Config.url}/${apiPrefix}/${apiEndpoint}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const data = await reqHandler({
+          url: `${Config.url}/${apiPrefix}/${apiEndpoint}`,
           credentials: 'include',
         })
-        if (!req.ok) {
-          throw new Error('Có lỗi xảy ra!')
-        }
-        const data = await req.json()
         if (!isUnmount) {
           console.log('Component unmounted!')
           return

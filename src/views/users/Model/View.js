@@ -15,7 +15,6 @@ import {
 
 const View = (props) => {
   const { data } = props
-  console.log('data', data)
   return (
     <>
       <CCol xs={12}>
