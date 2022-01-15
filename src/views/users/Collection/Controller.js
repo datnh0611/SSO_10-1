@@ -30,43 +30,36 @@ const Controller = (props) => {
     {
       field: 'status',
       label: 'Trạng thái',
-      template: (rowObj) => <div>Online</div>,
+      template: (rowObj) => (rowObj.status === 1 ? 'Online' : 'Offline'),
     },
   ]
 
   useEffect(() => {
     let isUnmount = true
+
     ;(async () => {
       try {
         if (users.length) {
           // USE CACHING TECHNIQUE TO OPTIMIZE WEB
-          console.log(!users.length)
-          console.log('Already load user!')
+          console.log('Already load users!')
           return
         }
         const req = await fetch(`${Config.url}/${apiPrefix}/${apiEndpoint}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            // "token": reqConfig.token ? reqConfig.token : null
           },
           credentials: 'include',
         })
-        console.log(req)
         if (!req.ok) {
           throw new Error('Có lỗi xảy ra!')
         }
         const data = await req.json()
-        console.log('data', data)
         if (!isUnmount) {
           console.log('Component unmounted!')
           return
         }
         setUsers(data['results'])
-
         return () => {
           console.log('Clean up func!')
           isUnmount = false
@@ -76,7 +69,6 @@ const Controller = (props) => {
         return
       }
     })()
-    console.log('OK')
   }, [users])
 
   return <View fields={fields} data={users || []} navigateTo={`/${apiEndpoint}`} />

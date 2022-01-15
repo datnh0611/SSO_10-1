@@ -14,8 +14,8 @@ const NoResultNoti = (props) => {
 
 NoResultNoti.propTypes = {
   colSpan: PropTypes.number.isRequired,
-  className: PropTypes.string.isRequired,
-  lang: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  lang: PropTypes.string,
 }
 
 export default NoResultNoti

@@ -16,6 +16,7 @@ const Controller = () => {
         url: `${Config.url}/api/v1/login`,
         method: 'POST',
         body: data,
+        credentials: 'include',
       })
       dispatch(authActions.login())
       history.push('/')

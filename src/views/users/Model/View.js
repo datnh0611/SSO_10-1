@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-// import DatePickers from './date'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { DatePicker } from '@progress/kendo-react-dateinputs'
 import {
-  CAvatar,
-  CCard,
-  CCardBody,
   CCol,
   CRow,
   CButton,
@@ -15,22 +12,41 @@ import {
   CFormSelect,
   CButtonGroup,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilPeople } from '@coreui/icons'
 
-const View = () => {
+const View = (props) => {
+  const { data } = props
+  console.log('data', data)
   return (
     <>
       <CCol xs={12}>
         <CForm>
           <div className="mb-4">
             <CButtonGroup role="group" aria-label="Basic example">
-              <CButton color="success">Save</CButton>
-              <CButton color="danger">Delete</CButton>
-              <CButton color="primary">Read QR Code</CButton>
+              <CButton color="secondary" onClick={props.onGoBack}>
+                Quay lại
+              </CButton>
+              <CButton color="success">Lưu thông tin</CButton>
+              <CButton color="danger">Xoá thông tin</CButton>
+              <CButton color="dark">QR Code</CButton>
             </CButtonGroup>
           </div>
+          <CRow className="mb-4">
+            <h2 className="mb-3">Thông tin đăng nhập</h2>
+            <CCol xs={6}>
+              <div className="mb-3">
+                <CFormLabel htmlFor="username">Username</CFormLabel>
+                <CFormInput id="username" value={data.username} />
+              </div>
+            </CCol>
+            <CCol xs={6}>
+              <div className="mb-3">
+                <CFormLabel htmlFor="password">Password</CFormLabel>
+                <CFormInput id="password" type="password" value={data.password || ''} />
+              </div>
+            </CCol>
+          </CRow>
           <CRow>
+            <h2 className="mb-3">Thông tin người dùng</h2>
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">ID Number</CFormLabel>
@@ -83,6 +99,11 @@ const View = () => {
       </CCol>
     </>
   )
+}
+
+View.propTypes = {
+  data: PropTypes.object.isRequired,
+  onGoBack: PropTypes.func.isRequired,
 }
 
 export default View

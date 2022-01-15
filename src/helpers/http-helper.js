@@ -1,12 +1,10 @@
+import Config from '../configs/config'
+
 export const reqHandler = async (reqConfig) => {
   const request = await fetch(reqConfig.url, {
     method: reqConfig.method || 'GET',
     headers: reqConfig.header || {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      // "token": reqConfig.token ? reqConfig.token : null
     },
     credentials: reqConfig.credentials ? reqConfig.credentials : 'same-origin',
     mode: reqConfig.mode ? reqConfig.mode : 'cors',

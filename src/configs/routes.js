@@ -85,6 +85,7 @@ const routes = [
    * USER
    */
   { path: '/users', name: 'Users', component: users },
+  { path: '/user/:userId', name: 'User', component: user },
   { path: '/user', name: 'User', component: user },
   /*********/
   { path: '/person1', name: 'Person1', component: Person1 },

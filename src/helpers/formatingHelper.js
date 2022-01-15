@@ -30,7 +30,7 @@ class Helper {
   static timestampToDate = (timestamp, format = 'DD/MM/YYYY') => {
     let date
     try {
-      date = moment(timestamp).format(format)
+      date = moment.unix(timestamp).format(format)
     } catch (error) {
       return null
     }

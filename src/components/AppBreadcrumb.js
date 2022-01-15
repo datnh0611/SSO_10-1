@@ -10,6 +10,11 @@ const AppBreadcrumb = () => {
 
   const getRouteName = (pathname, routes) => {
     const currentRoute = routes.find((route) => route.path === pathname)
+    if (!currentRoute) {
+      // use for the url having /:id
+      const path = pathname.split('/')
+      return path[path.length - 1]
+    }
     return currentRoute.name
   }
 

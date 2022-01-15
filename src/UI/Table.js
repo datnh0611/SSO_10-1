@@ -44,7 +44,7 @@ const Table = (props) => {
                 return (
                   <CTableDataCell key={formatHelper.generateId()} className="text-left">
                     <Link
-                      to={`${props.navigateTo}`}
+                      to={`${props.navigateTo}/${data.id}`}
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       {dataView}
