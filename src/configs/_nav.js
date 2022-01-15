@@ -197,7 +197,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Bên thứ ba (Client)',
-    to: '/sso',
+    to: '/clients',
     icon: <CIcon icon={cilBank} customClassName="nav-icon" />,
   },
   // {
