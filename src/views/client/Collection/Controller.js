@@ -45,12 +45,17 @@ const Controller = (props) => {
           console.log('Already load clients!')
           return
         }
+
         const data = await reqHandler({
           url: `${Config.url}/${apiPrefix}/${apiEndpoint}`,
           credentials: 'include',
         })
         if (!isUnmount) {
           console.log('Component unmounted!')
+          return
+        }
+        // API return []
+        if (!data['results'].length) {
           return
         }
         setClients(data['results'])
@@ -63,7 +68,7 @@ const Controller = (props) => {
         return
       }
     })()
-  }, [clients])
+  }, [clients, apiPrefix, apiEndpoint])
 
   return <View fields={fields} data={clients || []} navigateTo={`/${apiEndpoint}`} />
 }

@@ -35,12 +35,12 @@ const Controller = (props) => {
         console.log('error', error)
         return
       }
-    })(reqHandler, url, apiPrefix, apiEndpoint)
+    })()
 
     return () => {
       isUnmount = false
     }
-  }, [])
+  }, [reqHandler, url, apiPrefix, apiEndpoint])
   return <View data={user} onGoBack={goBackHandler} />
 }
 

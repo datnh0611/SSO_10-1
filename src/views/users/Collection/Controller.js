@@ -53,6 +53,10 @@ const Controller = (props) => {
           console.log('Component unmounted!')
           return
         }
+        // API return []
+        if (!data['results'].length) {
+          return
+        }
         setUsers(data['results'])
         return () => {
           console.log('Clean up func!')
