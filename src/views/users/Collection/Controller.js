@@ -72,4 +72,4 @@ const Controller = (props) => {
   return <View fields={fields} data={users || []} navigateTo={`/${apiEndpoint}`} />
 }
 
-export default Controller
+export default React.memo(Controller)
