@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import useInput from 'src/hooks/use-input'
 import PropTypes from 'prop-types'
 import { DatePicker } from '@progress/kendo-react-dateinputs'
 import {
@@ -15,18 +16,56 @@ import {
 
 const View = (props) => {
   const { data } = props
+
+  const { value: username, fetchValue: fetchUsername, onChange: onChangeUsername } = useInput()
+  const { value: password, fetchValue: fetchPassword, onChange: onChangePassword } = useInput()
+  // const { value: username, fetchValue: fetchUsername, onChange: onChangeUsername } = useInput()
+
+  useEffect(() => {
+    fetchUsername(data.username)
+  }, [data, fetchUsername])
+
+  const buttonGroup = [
+    {
+      name: 'Quay lại',
+      color: 'secondary',
+      className: 'secondary',
+      onClick: props.onPost,
+      visible: true,
+    },
+    {
+      name: 'Lưu thông tin',
+      color: 'success',
+      className: 'success',
+      onClick: props.paramId ? props.onPut : props.onPost,
+      visible: true,
+    },
+    {
+      name: 'Xoá thông tin',
+      color: 'danger',
+      className: 'danger',
+      onClick: props.onDelete,
+      visible: true,
+    },
+    {
+      name: 'QR Code',
+      color: 'dark',
+      className: 'dark',
+      onClick: props.onPost,
+      visible: true,
+    },
+  ]
   return (
     <>
       <CCol xs={12}>
         <CForm>
           <div className="mb-4">
             <CButtonGroup role="group" aria-label="Basic example">
-              <CButton color="secondary" onClick={props.onGoBack}>
-                Quay lại
-              </CButton>
-              <CButton color="success">Lưu thông tin</CButton>
-              <CButton color="danger">Xoá thông tin</CButton>
-              <CButton color="dark">QR Code</CButton>
+              {buttonGroup.map((btn, idx) => (
+                <CButton key={idx} color={btn.color} onClick={btn.onClick}>
+                  {btn.name}
+                </CButton>
+              ))}
             </CButtonGroup>
           </div>
           <CRow className="mb-4">
@@ -34,13 +73,13 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="username">Username</CFormLabel>
-                <CFormInput id="username" value={data.username} />
+                <CFormInput id="username" value={username} onChange={onChangeUsername} />
               </div>
             </CCol>
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="password">Password</CFormLabel>
-                <CFormInput id="password" type="password" value={data.password || ''} />
+                <CFormInput id="password" type="password" value={password || ''} disabled />
               </div>
             </CCol>
           </CRow>
@@ -49,7 +88,7 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">ID Number</CFormLabel>
-                <CFormInput />
+                <CFormInput disabled />
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Previous ID Number</CFormLabel>
@@ -101,8 +140,12 @@ const View = (props) => {
 }
 
 View.propTypes = {
+  paramId: PropTypes.string,
   data: PropTypes.object.isRequired,
   onGoBack: PropTypes.func.isRequired,
+  onPost: PropTypes.func.isRequired,
+  onPut: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }
 
 export default View

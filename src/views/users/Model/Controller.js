@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import useHttp from 'src/hooks/use-http'
-import { getSingle } from 'src/helpers/request-helper'
-import { reqHandler } from 'src/helpers/http-helper'
+import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/request-helper'
 import Config from '../../../configs/config'
 import View from './View'
 
@@ -13,6 +12,8 @@ const Controller = (props) => {
 
   /** API INFO */
   const apiEndpoint = 'user'
+  const collectionEndpoint = 'users'
+  const userId = param.userId
   const { url, apiPrefix } = Config
 
   /** STATE */
@@ -20,44 +21,62 @@ const Controller = (props) => {
 
   const goBackHandler = () => history.goBack()
 
-  const { req, data, error } = useHttp(getSingle)
+  // GET SINGLE
+  const { req: _read, data: userData } = useHttp(getSingle)
 
   useEffect(() => {
-    console.log('useEffect')
-    let isUnmount = true
-
-    ;(async () => {
-      console.log('LOAD USER!')
-      await req({ endpoint: apiEndpoint, id: param.userId })
-
-      console.log('resp', data)
-      if (!isUnmount) {
-        console.log('Component unmounted!')
-        return
-      }
-      setUser(data)
-
-      // try {
-      //   const resp = await reqHandler({
-      //     url: `${url}/${apiPrefix}/${apiEndpoint}/${param.userId}`,
-      //   })
-      //   if (!isUnmount) {
-      //     console.log('Component unmounted!')
-      //     return
-      //   }
-      //   setUser(resp)
-      // } catch (error) {
-      //   console.log('error', error)
-      //   return
-      // }
-    })()
-
-    return () => {
-      isUnmount = false
+    if (!userId) {
+      setUser({})
+      return
     }
-  }, [req, url, apiPrefix, apiEndpoint, user])
+    /** Tim hieu lai vi sao code the nay? */
+    // ;(async () => {
+    //   if (!userData) {
+    //     await _read(apiEndpoint, userId)
+    //     console.log('userData', userData)
+    //   } else {
+    //     setUser(userData)
+    //   }
+    // })()
+    if (!userData) {
+      _read(apiEndpoint, userId)
+      console.log('userData', userData)
+    } else {
+      setUser(userData)
+    }
+  }, [userId, apiEndpoint, _read, userData])
 
-  return <View data={user} onGoBack={goBackHandler} />
+  // POST
+  const { req: _post } = useHttp(post)
+  const postHandler = async (postData) => {
+    await _post(apiEndpoint, postData)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  // PUT
+  const { req: _put } = useHttp(putSingle)
+  const putHandler = async (putData) => {
+    await _put(apiEndpoint, userId, putData)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  // DELETE
+  const { req: _delete } = useHttp(deleteSingle)
+  const deleteHandler = async () => {
+    await _delete(apiEndpoint, userId)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  return (
+    <View
+      paramId={userId}
+      data={user}
+      onPost={postHandler}
+      onPut={putHandler}
+      onDelele={deleteHandler}
+      onGoBack={goBackHandler}
+    />
+  )
 }
 
 export default Controller

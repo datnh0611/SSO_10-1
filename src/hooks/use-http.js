@@ -1,4 +1,4 @@
-import { useReducer, useCallback } from 'react'
+import { useReducer, useCallback, memo } from 'react'
 
 const initialState = {
   status: 'pending',
@@ -32,10 +32,9 @@ const reducer = (state, action) => {
 const useHttp = (reqFunc) => {
   const [http, dispatchHttp] = useReducer(reducer, initialState)
 
-  const req = useCallback(async (reqData) => {
-    console.log('reqData', reqData)
+  const req = useCallback(async (...reqData) => {
     try {
-      const resp = await reqFunc(reqData)
+      const resp = await reqFunc(...reqData)
       dispatchHttp({ type: 'SUCCESS', resp: resp })
     } catch (error) {
       dispatchHttp({
@@ -44,11 +43,11 @@ const useHttp = (reqFunc) => {
       })
     }
   }, [])
-
   return {
     ...http,
     req,
   }
 }
 
+// export default memo(useHttp)
 export default useHttp

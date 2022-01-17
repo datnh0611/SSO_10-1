@@ -3,75 +3,51 @@ import config from '../configs/config'
 
 const { url, apiPrefix } = config
 
-const checkProperties = (instance, keys) => {
-  for (const key of keys) {
-    if (!instance.hasOwnProperty(key)) {
-      return null
-    }
-  }
-  return true
-}
-// export const getMany = async (endpoint, param = null) => {
-export const getMany = async (reqProps) => {
-  if (!checkProperties(reqProps, ['endpoint', 'param'])) {
-    throw new Error('Chưa đủ đối số phù hợp!')
-  }
-  // if (reqProps.hasOwnProperty())
+// export const getMany = async (endpoint, query = null) => {
+export const getMany = async (...reqProps) => {
+  const [endpoint, query] = reqProps
   const resp = await reqHandler({
-    url:
-      `${url}/${apiPrefix}/${reqProps.endpoint}` +
-      (reqProps.param ? `?${new URLSearchParams(reqProps.param)}` : ''),
+    url: `${url}/${apiPrefix}/${endpoint}` + (query ? `?${new URLSearchParams(query)}` : ''),
     credentials: 'include',
   })
   return resp
 }
 
-export const getSingle = async (reqProps) => {
-  if (!checkProperties(reqProps, ['endpoint', 'id'])) {
-    console.log('not have properties')
-    throw new Error('Chưa đủ đối số phù hợp!')
-  }
-  console.log('reqProps', reqProps, `${url}/${apiPrefix}/${reqProps.endpoint}/${reqProps.id}`)
+export const getSingle = async (...reqProps) => {
+  const [endpoint, id] = reqProps
   const resp = await reqHandler({
-    url: `${url}/${apiPrefix}/${reqProps.endpoint}/${reqProps.id}`,
+    url: `${url}/${apiPrefix}/${endpoint}/${id}`,
     credentials: 'include',
   })
   return resp
 }
 
-export const post = async (reqProps) => {
-  if (!checkProperties(reqProps, ['endpoint', 'data'])) {
-    throw new Error('Chưa đủ đối số phù hợp!')
-  }
+export const post = async (...reqProps) => {
+  const [endpoint, data] = reqProps
   const resp = await reqHandler({
-    url: `${url}/${apiPrefix}/${reqProps.endpoint}`,
+    url: `${url}/${apiPrefix}/${endpoint}`,
     method: 'POST',
-    body: reqProps.data,
+    body: data,
     credentials: 'include',
   })
   return resp
 }
 
-export const putSingle = async (reqProps) => {
-  if (!checkProperties(reqProps, ['endpoint', 'id', 'data'])) {
-    throw new Error('Chưa đủ đối số phù hợp!')
-  }
-
+export const putSingle = async (...reqProps) => {
+  const [endpoint, id, data] = reqProps
   const resp = await reqHandler({
-    url: `${url}/${apiPrefix}/${reqProps.endpoint}/${reqProps.id}`,
+    url: `${url}/${apiPrefix}/${endpoint}/${id}`,
     method: 'PUT',
-    body: reqProps.data,
+    body: data,
     credentials: 'include',
   })
   return resp
 }
 
-export const deleteSingle = async (reqProps) => {
-  if (!checkProperties(reqProps, ['endpoint', 'id'])) {
-    throw new Error('Chưa đủ đối số phù hợp!')
-  }
+export const deleteSingle = async (...reqProps) => {
+  const [endpoint, id] = reqProps
   const resp = await reqHandler({
-    url: `${url}/${apiPrefix}/${reqProps.endpoint}/${reqProps.id}`,
+    url: `${url}/${apiPrefix}/${endpoint}/${id}`,
     method: 'DELETE',
     credentials: 'include',
   })
