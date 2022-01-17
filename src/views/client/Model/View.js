@@ -30,67 +30,49 @@ const View = (props) => {
             </CButtonGroup>
           </div>
           <CRow className="mb-4">
-            <h2 className="mb-3">Thông tin đăng nhập</h2>
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="username">Username</CFormLabel>
-                <CFormInput id="username" value={data.username} />
+                <CFormLabel htmlFor="username">Client Name</CFormLabel>
+                <CFormInput id="clientname" />
               </div>
             </CCol>
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="password">Password</CFormLabel>
-                <CFormInput id="password" type="password" value={data.password || ''} />
+                <CFormLabel htmlFor="clienturi">Client URI</CFormLabel>
+                <CFormInput id="clienturi" />
               </div>
             </CCol>
           </CRow>
           <CRow>
-            <h2 className="mb-3">Thông tin người dùng</h2>
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">ID Number</CFormLabel>
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Scope</CFormLabel>
                 <CFormInput />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Previous ID Number</CFormLabel>
-                <CFormInput />
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Grant Types</CFormLabel>
+                <CFormTextarea rows="5"></CFormTextarea>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Date Register</CFormLabel>
-                {/* <DatePickers /> */}
-                <>
-                  <div className="k-my-4">
-                    <DatePicker format="dd-MM-yyyy" />
-                  </div>
-                </>
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
+                <CFormTextarea rows="5"></CFormTextarea>
               </div>
             </CCol>
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Full Name</CFormLabel>
-                <CFormInput />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Gender</CFormLabel>
+                <CFormLabel htmlFor="exampleFormControlInput1">
+                  Token Endpoint Auth Method
+                </CFormLabel>
                 <CFormSelect id="floatingSelect" aria-label="Floating label select example">
-                  <option>Open this select menu</option>
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
-                  <option value="3">Other</option>
+                  <option>Client secret basic</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Date of Birth</CFormLabel>
-                {/* <DatePickers /> */}
-                <>
-                  <div className="k-my-4">
-                    <DatePicker format="dd-MM-yyyy" />
-                  </div>
-                </>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Address</CFormLabel>
-                <CFormTextarea id="exampleFormControlTextarea1" rows="3"></CFormTextarea>
+                <CFormLabel htmlFor="exampleFormControlInput1">Redirect URIs</CFormLabel>
+                <CFormTextarea rows="5"></CFormTextarea>
               </div>
             </CCol>
           </CRow>
