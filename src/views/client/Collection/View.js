@@ -5,7 +5,8 @@ import { CCard, CCardBody, CCol, CRow, CButton, CFormInput, CForm } from '@coreu
 import Table from '../../../UI/Table'
 
 const View = (props) => {
-  // const { data, fields, navigateTo } = props
+  // const { data, fields, navigateTo } = prop
+
   return (
     <>
       <CRow>

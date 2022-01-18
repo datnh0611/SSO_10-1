@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { reqHandler } from 'src/helpers/http-helper'
-import Config from '../../../configs/config'
+import useHttp from 'src/hooks/use-http'
+import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/request-helper'
 import View from './View'
 
 const Controller = (props) => {
@@ -11,73 +12,61 @@ const Controller = (props) => {
 
   /** API INFO */
   const apiEndpoint = 'client'
-  const { url, apiPrefix } = Config
+  const collectionEndpoint = 'clients'
+  const { clientId: id } = param
+  const { csrf_token: csrfToken, id: authId } = useSelector((state) => state.auth.user)
 
   /** STATE */
   const [client, setClient] = useState({})
 
   const goBackHandler = () => history.goBack()
 
-  const fields = [
-    {
-      field: 'grant_types',
-      label: '...',
-    },
-
-    {
-      field: 'redirect_uris',
-      label: '...',
-    },
-
-    {
-      field: 'response_types',
-      label: '...',
-    },
-
-    {
-      field: 'scope',
-      label: '...',
-    },
-
-    {
-      field: 'token_endpoint_auth_method',
-      label: '...',
-    },
-
-    {
-      field: 'client_id_issued_at',
-      label: '...',
-    },
-
-    {
-      field: 'client_secret_expires_at',
-      label: '...',
-    },
-  ]
+  // GET SINGLE
+  const { req: _read, data: data } = useHttp(getSingle)
   useEffect(() => {
-    let isUnmount = true
-
-    ;(async () => {
-      try {
-        const resp = await reqHandler({
-          url: `${url}/${apiPrefix}/${apiEndpoint}/${param.clientId}`,
-        })
-        if (!isUnmount) {
-          console.log('Component unmounted!')
-          return
-        }
-        setClient(resp)
-      } catch (error) {
-        console.log('error', error)
-        return
-      }
-    })(reqHandler, url, apiPrefix, apiEndpoint)
-
-    return () => {
-      isUnmount = false
+    if (!id) {
+      setClient({})
+      return
     }
-  }, [])
-  return <View data={client} onGoBack={goBackHandler} />
+    if (!data) {
+      _read(apiEndpoint, id, csrfToken)
+      console.log('data', data)
+    } else {
+      setClient(data)
+    }
+  }, [id, apiEndpoint, _read, data])
+
+  // POST
+  const { req: _post } = useHttp(post)
+  const postHandler = async (postData) => {
+    await _post(apiEndpoint, postData, csrfToken)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  // PUT
+  const { req: _put } = useHttp(putSingle)
+  const putHandler = async (putData) => {
+    await _put(apiEndpoint, id, putData, csrfToken)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  // DELETE
+  const { req: _delete } = useHttp(deleteSingle)
+  const deleteHandler = async () => {
+    await _delete(apiEndpoint, id, csrfToken)
+    history.push(`/${collectionEndpoint}`)
+  }
+
+  return (
+    <View
+      paramId={id}
+      data={client}
+      onPost={postHandler}
+      onPut={putHandler}
+      onDelete={deleteHandler}
+      onGoBack={goBackHandler}
+    />
+  )
 }
 
 export default Controller
