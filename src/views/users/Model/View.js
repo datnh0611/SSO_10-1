@@ -25,44 +25,61 @@ const View = (props) => {
     fetchUsername(data.username)
   }, [data, fetchUsername])
 
+  const submitHandler = (event) => {
+    event.preventDefault()
+
+    const data = {
+      username,
+      password,
+    }
+
+    if (!props.paramId) {
+      props.onPost(data)
+    } else {
+      props.onPut(data)
+    }
+  }
+
   const buttonGroup = [
     {
       name: 'Quay lại',
       color: 'secondary',
       className: 'secondary',
-      onClick: props.onPost,
+      onClick: props.onGoBack,
       visible: true,
     },
     {
       name: 'Lưu thông tin',
       color: 'success',
       className: 'success',
-      onClick: props.paramId ? props.onPut : props.onPost,
+      // onClick: props.paramId ? props.onPut : props.onPost,
       visible: true,
     },
     {
       name: 'Xoá thông tin',
       color: 'danger',
       className: 'danger',
-      onClick: props.onDelete,
+      // type: 'submit',
+      onClick: props.onDelete.bind(props.paramId),
       visible: true,
     },
     {
       name: 'QR Code',
       color: 'dark',
       className: 'dark',
-      onClick: props.onPost,
+      type: 'submit',
+      // onClick: props.onPost,
       visible: true,
     },
   ]
   return (
     <>
       <CCol xs={12}>
-        <CForm>
+        <CForm onSubmit={submitHandler}>
           <div className="mb-4">
             <CButtonGroup role="group" aria-label="Basic example">
               {buttonGroup.map((btn, idx) => (
-                <CButton key={idx} color={btn.color} onClick={btn.onClick}>
+                <CButton key={idx} color={btn.color} onClick={btn.onClick} disabled={!btn.visible}>
                   {btn.name}
                 </CButton>
               ))}
@@ -79,7 +96,13 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="password">Password</CFormLabel>
-                <CFormInput id="password" type="password" value={password || ''} disabled />
+                <CFormInput
+                  id="password"
+                  type="password"
+                  value={password}
+                  disabled={props.paramId}
+                  onChange={onChangePassword}
+                />
               </div>
             </CCol>
           </CRow>
@@ -88,7 +111,7 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">ID Number</CFormLabel>
-                <CFormInput disabled />
+                <CFormInput />
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Previous ID Number</CFormLabel>

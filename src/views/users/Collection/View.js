@@ -1,10 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCol, CRow, CButton, CFormInput, CForm } from '@coreui/react'
 import Table from '../../../UI/Table'
 
 const View = (props) => {
   // const { data, fields, navigateTo } = props
+
   return (
     <>
       <CRow>
@@ -14,12 +16,16 @@ const View = (props) => {
               <br />
               <CForm className="d-flex">
                 <CFormInput className="me-sm-2" placeholder="Search..." size="sm" />
-                <CButton color="light" className="my-2 my-sm-0" type="submit">
+                <CButton color="light" className="my-2 my-sm-0">
                   Search
                 </CButton>
               </CForm>
               <br />
-              <CButton className="mb-3">Thêm</CButton>
+              <CButton className="mb-3">
+                <Link to={'/user'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  Thêm
+                </Link>
+              </CButton>
               <Table {...props} />
             </CCardBody>
           </CCard>

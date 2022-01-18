@@ -33,18 +33,18 @@ const App = () => {
         const currentUser = await reqHandler({
           url: `${Config.url}/api/v1/current_user`,
         })
-        console.log('currentUser', currentUser)
         if (!Object.keys(currentUser).length) {
           console.log('Not have current user')
           dispatch(authActions.logout())
           return
         }
-        dispatch(authActions.login())
+        console.log('currentUser', currentUser)
+        dispatch(authActions.login({ user: currentUser }))
       } catch (error) {
         console.log('Can not get current user!')
       }
     })()
-  }, [])
+  }, [isLogin])
 
   return (
     <React.Suspense fallback={loading}>

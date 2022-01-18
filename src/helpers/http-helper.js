@@ -1,10 +1,10 @@
-import Config from '../configs/config'
-
 export const reqHandler = async (reqConfig) => {
+  console.log('reqConfig', reqConfig)
   const request = await fetch(reqConfig.url, {
     method: reqConfig.method || 'GET',
     headers: reqConfig.header || {
       'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': reqConfig.csrfToken,
     },
     credentials: reqConfig.credentials ? reqConfig.credentials : 'same-origin',
     mode: reqConfig.mode ? reqConfig.mode : 'cors',

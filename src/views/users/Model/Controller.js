@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import useHttp from 'src/hooks/use-http'
 import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/request-helper'
@@ -14,7 +15,7 @@ const Controller = (props) => {
   const apiEndpoint = 'user'
   const collectionEndpoint = 'users'
   const userId = param.userId
-  const { url, apiPrefix } = Config
+  const { csrf_token: csrfToken, id } = useSelector((state) => state.auth.user)
 
   /** STATE */
   const [user, setUser] = useState({})
@@ -30,16 +31,8 @@ const Controller = (props) => {
       return
     }
     /** Tim hieu lai vi sao code the nay? */
-    // ;(async () => {
-    //   if (!userData) {
-    //     await _read(apiEndpoint, userId)
-    //     console.log('userData', userData)
-    //   } else {
-    //     setUser(userData)
-    //   }
-    // })()
     if (!userData) {
-      _read(apiEndpoint, userId)
+      _read(apiEndpoint, userId, csrfToken)
       console.log('userData', userData)
     } else {
       setUser(userData)
@@ -49,21 +42,21 @@ const Controller = (props) => {
   // POST
   const { req: _post } = useHttp(post)
   const postHandler = async (postData) => {
-    await _post(apiEndpoint, postData)
+    await _post(apiEndpoint, postData, csrfToken)
     history.push(`/${collectionEndpoint}`)
   }
 
   // PUT
   const { req: _put } = useHttp(putSingle)
   const putHandler = async (putData) => {
-    await _put(apiEndpoint, userId, putData)
+    await _put(apiEndpoint, userId, putData, csrfToken)
     history.push(`/${collectionEndpoint}`)
   }
 
   // DELETE
   const { req: _delete } = useHttp(deleteSingle)
   const deleteHandler = async () => {
-    await _delete(apiEndpoint, userId)
+    await _delete(apiEndpoint, userId, csrfToken)
     history.push(`/${collectionEndpoint}`)
   }
 
@@ -73,7 +66,7 @@ const Controller = (props) => {
       data={user}
       onPost={postHandler}
       onPut={putHandler}
-      onDelele={deleteHandler}
+      onDelete={deleteHandler}
       onGoBack={goBackHandler}
     />
   )

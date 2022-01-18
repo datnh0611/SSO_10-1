@@ -18,7 +18,8 @@ const Controller = () => {
         body: data,
         credentials: 'include',
       })
-      dispatch(authActions.login())
+      console.log('resp', resp)
+      dispatch(authActions.login(resp))
       history.push('/')
     } catch (error) {
       console.log(error)

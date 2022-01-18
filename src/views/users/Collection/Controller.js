@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import View from './View'
 import Config from 'src/configs/config'
 import formatingHelper from '../../../helpers/formatingHelper'
@@ -9,6 +10,8 @@ const Controller = (props) => {
 
   const apiEndpoint = 'user'
   const apiPrefix = 'api/v1'
+
+  const { csrf_token: csrfToken, id } = useSelector((state) => state.auth.user)
 
   const fields = [
     {
@@ -48,6 +51,7 @@ const Controller = (props) => {
         const data = await reqHandler({
           url: `${Config.url}/${apiPrefix}/${apiEndpoint}`,
           credentials: 'include',
+          csrfToken,
         })
         if (!isUnmount) {
           console.log('Component unmounted!')
