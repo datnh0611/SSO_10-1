@@ -27,7 +27,6 @@ const App = () => {
 
   useEffect(() => {
     ;(async () => {
-      console.log('isLogin', isLogin)
       if (isLogin) return
       try {
         const currentUser = await reqHandler({
@@ -38,7 +37,6 @@ const App = () => {
           dispatch(authActions.logout())
           return
         }
-        console.log('currentUser', currentUser)
         dispatch(authActions.login({ user: currentUser }))
       } catch (error) {
         console.log('Can not get current user!')

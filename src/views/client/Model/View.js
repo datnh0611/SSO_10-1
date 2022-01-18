@@ -35,47 +35,52 @@ const View = (props) => {
                 <CFormLabel htmlFor="username">Client Name</CFormLabel>
                 <CFormInput id="clientname" />
               </div>
-            </CCol>
-            <CCol xs={6}>
+
               <div className="mb-3">
                 <CFormLabel htmlFor="clienturi">Client URI</CFormLabel>
                 <CFormInput id="clienturi" />
               </div>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol xs={6}>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Scope</CFormLabel>
-                <CFormInput />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Grant Types</CFormLabel>
-                <CFormTextarea rows="5"></CFormTextarea>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
-                <CFormTextarea rows="5"></CFormTextarea>
-              </div>
-            </CCol>
-            <CCol xs={6}>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">
-                  Token Endpoint Auth Method
-                </CFormLabel>
-                <CFormSelect id="floatingSelect" aria-label="Floating label select example">
-                  <option>Client secret basic</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </CFormSelect>
-              </div>
+
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Redirect URIs</CFormLabel>
                 <CFormTextarea rows="5"></CFormTextarea>
               </div>
             </CCol>
+            <CCol xs={6}>
+              <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Scope</CFormLabel>
+                <CFormInput />
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">
+                  Token Endpoint Auth Method
+                </CFormLabel>
+                <CFormSelect id="floatingSelect" aria-label="Floating label select example">
+                  <option value="client_secret_basic">Client Secret Basic</option>
+                  <option value="client_secret_post">Client Secret Post</option>
+                </CFormSelect>
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Grant Types</CFormLabel>
+                <CFormTextarea rows="5"></CFormTextarea>
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
+                <CFormTextarea rows="5"></CFormTextarea>
+              </div>
+            </CCol>
           </CRow>
+          {/* <CRow>
+            <CCol xs={6}>
+             
+            </CCol>
+            <CCol xs={6}>
+              
+            </CCol>
+          </CRow> */}
         </CForm>
       </CCol>
     </>

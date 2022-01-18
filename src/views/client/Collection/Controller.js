@@ -11,27 +11,38 @@ const Controller = (props) => {
   const apiPrefix = 'api/v1'
 
   const fields = [
+    // {
+    //   field: 'client_id',
+    //   label: 'ID khách',
+    //   // template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
+    // },
     {
       field: 'client_name',
       label: 'Tên khách',
     },
 
+    // {
+    //   field: 'scope',
+    //   label: 'Quyền truy cập',
+    //   // template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
+    // },
+
     {
-      field: 'client_uri',
-      label: '...',
-      // template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
+      field: 'created_at',
+      label: 'Khởi tạo ngày',
+      template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
     },
 
     {
-      field: 'client_id',
-      label: 'ID khách',
-      // template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
+      field: 'client_id_issued_at',
+      label: 'Ngày tạo mã',
+      template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_id_issued_at),
     },
 
     {
-      field: 'client_secret',
-      label: '...',
-      // template: (rowObj) => (rowObj.status === 1 ? 'Online' : 'Offline'),
+      field: 'client_secret_expires_at',
+      label: 'Ngày hết hạn',
+      template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
     },
   ]
 

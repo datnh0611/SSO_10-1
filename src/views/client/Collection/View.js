@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCol, CRow, CButton, CFormInput, CForm } from '@coreui/react'
 import Table from '../../../UI/Table'
@@ -19,7 +20,11 @@ const View = (props) => {
                 </CButton>
               </CForm>
               <br />
-              <CButton className="mb-3">Thêm</CButton>
+              <CButton className="mb-3">
+                <Link to={'/client'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  Thêm
+                </Link>
+              </CButton>
               <Table {...props} />
             </CCardBody>
           </CCard>
