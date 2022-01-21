@@ -22,21 +22,22 @@ const View = (props) => {
   // const { value: username, fetchValue: fetchUsername, onChange: onChangeUsername } = useInput()
 
   useEffect(() => {
+    if (!Object.keys(data).length) return
     fetchUsername(data.username)
   }, [data, fetchUsername])
 
   const submitHandler = (event) => {
     event.preventDefault()
 
-    const data = {
+    const submittedData = {
       username,
       password,
     }
 
     if (!props.paramId) {
-      props.onPost(data)
+      props.onPost(submittedData)
     } else {
-      props.onPut(data)
+      props.onPut(submittedData)
     }
   }
 
@@ -52,6 +53,7 @@ const View = (props) => {
       name: 'Lưu thông tin',
       color: 'success',
       className: 'success',
+      type: 'submit',
       // onClick: props.paramId ? props.onPut : props.onPost,
       visible: true,
     },
@@ -60,14 +62,14 @@ const View = (props) => {
       color: 'danger',
       className: 'danger',
       // type: 'submit',
-      onClick: props.onDelete.bind(props.paramId),
+      onClick: props.onDelete.bind(null, props.paramId),
       visible: true,
     },
     {
       name: 'QR Code',
       color: 'dark',
       className: 'dark',
-      type: 'submit',
+      // type: 'submit',
       // onClick: props.onPost,
       visible: true,
     },
@@ -79,7 +81,13 @@ const View = (props) => {
           <div className="mb-4">
             <CButtonGroup role="group" aria-label="Basic example">
               {buttonGroup.map((btn, idx) => (
-                <CButton key={idx} color={btn.color} onClick={btn.onClick} disabled={!btn.visible}>
+                <CButton
+                  key={idx}
+                  type={btn.type || 'button'}
+                  color={btn.color}
+                  onClick={btn.onClick}
+                  disabled={!btn.visible}
+                >
                   {btn.name}
                 </CButton>
               ))}

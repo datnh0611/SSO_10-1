@@ -14,7 +14,7 @@ const Controller = (props) => {
   const fields = [
     {
       field: 'client_name',
-      label: 'Tên khách',
+      label: 'Tên bên thứ ba',
     },
     {
       field: 'created_at',
@@ -29,7 +29,13 @@ const Controller = (props) => {
     {
       field: 'client_secret_expires_at',
       label: 'Ngày hết hạn',
-      template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
+      template: (rowObj) =>
+        // {
+        //   console.log(rowObj)
+        // },
+        !rowObj.client_secret_expires_at
+          ? 'Vô thời hạn'
+          : formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
     },
   ]
 

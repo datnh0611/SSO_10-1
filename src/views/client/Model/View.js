@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import useInput from '../../../hooks/use-input'
 import { DatePicker } from '@progress/kendo-react-dateinputs'
@@ -13,6 +13,7 @@ import {
   CFormSelect,
   CButtonGroup,
 } from '@coreui/react'
+import formatingHelper from '../../../helpers/formatingHelper'
 
 const View = (props) => {
   const { data } = props
@@ -46,19 +47,91 @@ const View = (props) => {
     onChange: onChangeAuthMethod,
   } = useInput('client_secret_basic')
 
-  
+  useEffect(() => {
+    // fetchClientName(data.clientName)
+    console.log('data', data)
+    if (!Object.keys(data).length) return
+    const clientMetadata = JSON.parse(data['_client_metadata'])
+    console.log('clientMetadata', clientMetadata)
+  }, [
+    data,
+    fetchClientName,
+    fetchGrantTypes,
+    fetchRedirectUris,
+    fetchResponseTypes,
+    fetchAuthMethod,
+  ])
+
+  const submitHandler = (event) => {
+    event.preventDefault()
+    console.log('SUMMITTED')
+    const submittedData = {
+      client_name: clientName,
+      client_uri: clientUri,
+      grant_types: formatingHelper.strToArray(grantTypes),
+      redirect_uris: formatingHelper.strToArray(redirectUris),
+      response_types: formatingHelper.strToArray(responseTypes),
+      scope: scope,
+      token_endpoint_auth_method: tokenEndpointAuthMethod,
+    }
+
+    if (!props.paramId) {
+      props.onPost(submittedData)
+    } else {
+      props.onPut(submittedData)
+    }
+  }
+
+  const buttonGroup = [
+    {
+      name: 'Quay lại',
+      color: 'secondary',
+      className: 'secondary',
+      onClick: props.onGoBack,
+      visible: true,
+    },
+    {
+      name: 'Lưu thông tin',
+      color: 'success',
+      className: 'success',
+      type: 'submit',
+      // onClick: props.paramId ? props.onPut : props.onPost,
+      visible: true,
+    },
+    {
+      name: 'Xoá thông tin',
+      color: 'danger',
+      className: 'danger',
+      // type: 'submit',
+      onClick: props.onDelete.bind(null, props.paramId),
+      visible: true,
+    },
+    {
+      name: 'QR Code',
+      color: 'dark',
+      className: 'dark',
+      // onClick: props.onPost,
+      visible: true,
+    },
+  ]
+
   return (
     <>
       <CCol xs={12}>
-        <CForm>
+        <CForm onSubmit={submitHandler}>
           <div className="mb-4">
             <CButtonGroup role="group" aria-label="Basic example">
-              <CButton color="secondary" onClick={props.onGoBack}>
-                Quay lại
-              </CButton>
-              <CButton color="success">Lưu thông tin</CButton>
-              <CButton color="danger">Xoá thông tin</CButton>
-              <CButton color="dark">QR Code</CButton>
+              {buttonGroup.map((btn, idx) => (
+                <CButton
+                  key={idx}
+                  type={btn.type || 'button'}
+                  color={btn.color}
+                  onClick={btn.onClick}
+                  disabled={!btn.visible}
+                >
+                  {btn.name}
+                </CButton>
+              ))}
             </CButtonGroup>
           </div>
           <CRow className="mb-4">
@@ -125,8 +198,12 @@ const View = (props) => {
 }
 
 View.propTypes = {
+  paramId: PropTypes.string,
   data: PropTypes.object.isRequired,
   onGoBack: PropTypes.func.isRequired,
+  onPost: PropTypes.func.isRequired,
+  onPut: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }
 
 export default View

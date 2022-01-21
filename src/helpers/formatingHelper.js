@@ -73,6 +73,28 @@ class Helper {
       ...data,
     }
   }
+
+  static strToArray = (str, separator = ' ') => {
+    return str ? str.split(separator) : null
+  }
+
+  static camelToSnakeCase = (str) => {
+    return str
+      ? str
+          .split(/(?=[A-Z])/)
+          .join('_')
+          .toLowerCase()
+      : null
+  }
+
+  static snakeToCamelCase = (str) => {
+    return str
+      ? str
+          .split('_')
+          .map((char) => char[0].toLowerCase())
+          .join('')
+      : ''
+  }
 }
 
 export default Helper
