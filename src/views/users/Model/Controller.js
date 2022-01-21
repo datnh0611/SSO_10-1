@@ -14,8 +14,8 @@ const Controller = (props) => {
   /** API INFO */
   const apiEndpoint = 'user'
   const collectionEndpoint = 'users'
-  const userId = param.userId
-  const { csrf_token: csrfToken, id } = useSelector((state) => state.auth.user)
+  const { userId: id } = param
+  const { csrf_token: csrfToken, id: authId } = useSelector((state) => state.auth.user)
 
   /** STATE */
   const [user, setUser] = useState({})
@@ -23,21 +23,21 @@ const Controller = (props) => {
   const goBackHandler = () => history.goBack()
 
   // GET SINGLE
-  const { req: _read, data: userData } = useHttp(getSingle)
+  const { req: _read, data: data } = useHttp(getSingle)
 
   useEffect(() => {
-    if (!userId) {
+    if (!id) {
       setUser({})
       return
     }
     /** Tim hieu lai vi sao code the nay? */
-    if (!userData) {
-      _read(apiEndpoint, userId, csrfToken)
-      console.log('userData', userData)
+    if (!data) {
+      _read(apiEndpoint, id, csrfToken)
+      console.log('data', data)
     } else {
-      setUser(userData)
+      setUser(data)
     }
-  }, [userId, apiEndpoint, _read, userData])
+  }, [id, apiEndpoint, _read, data])
 
   // POST
   const { req: _post } = useHttp(post)
@@ -49,20 +49,20 @@ const Controller = (props) => {
   // PUT
   const { req: _put } = useHttp(putSingle)
   const putHandler = async (putData) => {
-    await _put(apiEndpoint, userId, putData, csrfToken)
+    await _put(apiEndpoint, id, putData, csrfToken)
     history.push(`/${collectionEndpoint}`)
   }
 
   // DELETE
   const { req: _delete } = useHttp(deleteSingle)
   const deleteHandler = async () => {
-    await _delete(apiEndpoint, userId, csrfToken)
+    await _delete(apiEndpoint, id, csrfToken)
     history.push(`/${collectionEndpoint}`)
   }
 
   return (
     <View
-      paramId={userId}
+      paramId={id}
       data={user}
       onPost={postHandler}
       onPut={putHandler}

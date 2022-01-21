@@ -19,8 +19,13 @@ import {
 import Table from '../../../UI/Table'
 
 const View = (props) => {
+<<<<<<< HEAD
   // const { data, fields, navigateTo } = props
   const [visible, setVisible] = useState(false)
+=======
+  // const { data, fields, navigateTo } = prop
+
+>>>>>>> ee38b7b910054cda836adf5a8f69f477a53d35f2
   return (
     <>
       <CRow>

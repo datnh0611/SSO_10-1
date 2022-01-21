@@ -5,44 +5,37 @@ import formatingHelper from '../../../helpers/formatingHelper'
 import { reqHandler } from 'src/helpers/http-helper'
 
 const Controller = (props) => {
-  const [clients, setClients] = useState([])
-
   const apiEndpoint = 'client'
   const apiPrefix = 'api/v1'
 
+  /** STATE */
+  const [clients, setClients] = useState([])
+
   const fields = [
-    // {
-    //   field: 'client_id',
-    //   label: 'ID khách',
-    //   // template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
-    // },
     {
       field: 'client_name',
-      label: 'Tên khách',
+      label: 'Tên bên thứ ba',
     },
-
-    // {
-    //   field: 'scope',
-    //   label: 'Quyền truy cập',
-    //   // template: (rowObj) => formatingHelper.timestampToDate(rowObj.last_login_at),
-    // },
-
     {
       field: 'created_at',
       label: 'Khởi tạo ngày',
       template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
     },
-
     {
       field: 'client_id_issued_at',
       label: 'Ngày tạo mã',
       template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_id_issued_at),
     },
-
     {
       field: 'client_secret_expires_at',
       label: 'Ngày hết hạn',
-      template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
+      template: (rowObj) =>
+        // {
+        //   console.log(rowObj)
+        // },
+        !rowObj.client_secret_expires_at
+          ? 'Vô thời hạn'
+          : formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
     },
   ]
 
