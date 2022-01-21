@@ -73,14 +73,6 @@ const View = (props) => {
               </div>
             </CCol>
           </CRow>
-          {/* <CRow>
-            <CCol xs={6}>
-             
-            </CCol>
-            <CCol xs={6}>
-              
-            </CCol>
-          </CRow> */}
         </CForm>
       </CCol>
     </>

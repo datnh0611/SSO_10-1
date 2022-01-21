@@ -1,17 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { CCard, CCardBody, CCol, CRow, CButton, CFormInput, CForm } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCol,
+  CRow,
+  CButton,
+  CFormInput,
+  CForm,
+  CModal,
+  CModalBody,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
+  CModalContent,
+} from '@coreui/react'
 import Table from '../../../UI/Table'
 
 const View = (props) => {
   // const { data, fields, navigateTo } = props
+  const [visible, setVisible] = useState(false)
   return (
     <>
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
             <CCardBody>
+              <CButton onClick={() => setVisible(!visible)}>Launch demo modal</CButton>
+              <CModal visible={visible} onClose={() => setVisible(false)}>
+                <CModalHeader>
+                  <CModalTitle>Single Sign-On</CModalTitle>
+                </CModalHeader>
+                <CModalBody className="text-center">Choose your account</CModalBody>
+                <CModalContent className="text-center">abc</CModalContent>
+                <CModalContent className="text-center">xyz</CModalContent>
+                <CModalFooter>
+                  <CButton color="secondary" onClick={() => setVisible(false)}>
+                    Close
+                  </CButton>
+                  <CButton color="primary">Save changes</CButton>
+                </CModalFooter>
+              </CModal>
               <br />
               <CForm className="d-flex">
                 <CFormInput className="me-sm-2" placeholder="Search..." size="sm" />
