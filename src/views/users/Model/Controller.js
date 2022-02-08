@@ -23,7 +23,7 @@ const Controller = (props) => {
   const goBackHandler = () => history.goBack()
 
   // GET SINGLE
-  const { req: _read, data: data } = useHttp(getSingle)
+  const { req: _read, data } = useHttp(getSingle)
 
   useEffect(() => {
     if (!id) {
@@ -37,7 +37,7 @@ const Controller = (props) => {
     } else {
       setUser(data)
     }
-  }, [id, apiEndpoint, _read, data])
+  }, [id, apiEndpoint, _read, data, csrfToken])
 
   // POST
   const { req: _post } = useHttp(post)

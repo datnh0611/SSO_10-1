@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import useInput from '../../../hooks/use-input'
-import { DatePicker } from '@progress/kendo-react-dateinputs'
+import { clientObj, clientAttrs } from './Schema.js'
+import Multiselect from 'multiselect-react-dropdown'
 import {
   CCol,
   CRow,
@@ -18,61 +19,68 @@ import formatingHelper from '../../../helpers/formatingHelper'
 const View = (props) => {
   const { data } = props
 
-  // const { value: clientId, fetchValue: fetchClientId, onChange: onChangeClientId } = useInput()
-  const {
-    value: clientName,
-    fetchValue: fetchClientName,
-    onChange: onChangeClientName,
-  } = useInput()
-  const { value: clientUri, fetchValue: fetchClientUri, onChange: onChangeClientUri } = useInput()
-  const {
-    value: grantTypes,
-    fetchValue: fetchGrantTypes,
-    onChange: onChangeGrantTypes,
-  } = useInput([])
-  const {
-    value: redirectUris,
-    fetchValue: fetchRedirectUris,
-    onChange: onChangeRedirectUris,
-  } = useInput([])
-  const {
-    value: responseTypes,
-    fetchValue: fetchResponseTypes,
-    onChange: onChangeResponseTypes,
-  } = useInput()
-  const { value: scope, fetchValue: fetchScope, onChange: onChangeScope } = useInput()
-  const {
-    value: tokenEndpointAuthMethod,
-    fetchValue: fetchAuthMethod,
-    onChange: onChangeAuthMethod,
-  } = useInput('client_secret_basic')
+  const [client, setClient] = useState(clientObj)
+
+  const handleInputChange = (event) => {
+    setClient({
+      ...client,
+      [event.target.name]: event.target.value,
+    })
+  }
+
+  const fetchData = useCallback((data) => {
+    const clientMetadata = JSON.parse(data['_client_metadata'])
+    const result = {}
+    for (const key in clientAttrs) {
+      // get from data
+      if (data.hasOwnProperty(clientAttrs[key].key)) {
+        switch (clientAttrs[key].type) {
+          case 'date': {
+            result[key] = formatingHelper.timestampToDate(data[clientAttrs[key].key])
+            break
+          }
+          case 'list': {
+            // result[key] = data[clientAttrs[key].key]
+            break
+          }
+          case 'number': {
+            // result[key] = data[clientAttrs[key].key]
+            break
+          }
+          default:
+            result[key] = data[clientAttrs[key].key]
+        }
+      }
+      // get from metaData
+      if (clientMetadata.hasOwnProperty(clientAttrs[key].key)) {
+        result[key] = clientMetadata[clientAttrs[key].key]
+      }
+    }
+    return result
+  }, [])
 
   useEffect(() => {
-    // fetchClientName(data.clientName)
-    console.log('data', data)
-    if (!Object.keys(data).length) return
-    const clientMetadata = JSON.parse(data['_client_metadata'])
-    console.log('clientMetadata', clientMetadata)
-  }, [
-    data,
-    fetchClientName,
-    fetchGrantTypes,
-    fetchRedirectUris,
-    fetchResponseTypes,
-    fetchAuthMethod,
-  ])
+    // console.log('data', data)
+    if (!Object.keys(data).length) {
+      return
+    }
+    const clientData = fetchData(data)
+    setClient(clientData)
+  }, [data, fetchData])
 
   const submitHandler = (event) => {
     event.preventDefault()
     console.log('SUMMITTED')
+    console.log('client.grantTypes', typeof client.grantTypes)
+    // TODO: fix post function in here
     const submittedData = {
-      client_name: clientName,
-      client_uri: clientUri,
-      grant_types: formatingHelper.strToArray(grantTypes),
-      redirect_uris: formatingHelper.strToArray(redirectUris),
-      response_types: formatingHelper.strToArray(responseTypes),
-      scope: scope,
-      token_endpoint_auth_method: tokenEndpointAuthMethod,
+      client_name: client.clientName,
+      client_uri: client.clientUri,
+      grant_types: formatingHelper.strToArray(client.grantTypes),
+      redirect_uris: formatingHelper.strToArray(client.redirectUris),
+      response_types: formatingHelper.strToArray(client.responseTypes),
+      scope: client.scope,
+      token_endpoint_auth_method: client.tokenEndpointAuthMethod || 'client_secret_basic',
     }
 
     if (!props.paramId) {
@@ -106,13 +114,6 @@ const View = (props) => {
       onClick: props.onDelete.bind(null, props.paramId),
       visible: true,
     },
-    {
-      name: 'QR Code',
-      color: 'dark',
-      className: 'dark',
-      // onClick: props.onPost,
-      visible: true,
-    },
   ]
 
   return (
@@ -137,24 +138,78 @@ const View = (props) => {
           <CRow className="mb-4">
             <CCol xs={6}>
               <div className="mb-3">
+                <CFormLabel htmlFor="username">Client ID</CFormLabel>
+                <CFormInput
+                  id="clientId"
+                  name="clientId"
+                  value={client.clientId}
+                  onChange={handleInputChange}
+                  disabled={clientAttrs.clientId.disabled}
+                />
+              </div>
+
+              <div className="mb-3">
                 <CFormLabel htmlFor="username">Client Name</CFormLabel>
-                <CFormInput id="clientname" value={clientName} onChange={onChangeClientName} />
+                <CFormInput
+                  id="clientName"
+                  name="clientName"
+                  value={client.clientName}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="username">Client Secret</CFormLabel>
+                <CFormInput
+                  id="clientSecret"
+                  name="clientSecret"
+                  value={client.clientSecret}
+                  onChange={handleInputChange}
+                  disabled={clientAttrs.clientSecret.disabled}
+                />
               </div>
 
               <div className="mb-3">
                 <CFormLabel htmlFor="clienturi">Client URI</CFormLabel>
-                <CFormInput id="clienturi" value={clientUri} onChange={onChangeClientUri} />
+                <CFormInput
+                  id="clientUri"
+                  name="clientUri"
+                  value={client.clientUri}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Redirect URIs</CFormLabel>
-                <CFormTextarea rows="5" value={redirectUris} onChange={onChangeRedirectUris} />
+                <CFormLabel htmlFor="username">Issues At</CFormLabel>
+                <CFormInput
+                  id="issuesAt"
+                  name="issuesAt"
+                  value={client.issuesAt}
+                  onChange={handleInputChange}
+                  disabled={clientAttrs.issuesAt.disabled}
+                />
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="username">Expired At</CFormLabel>
+                <CFormInput
+                  id="expiresAt"
+                  name="expiresAt"
+                  value={client.expiresAt}
+                  onChange={handleInputChange}
+                  disabled={clientAttrs.expiresAt.disabled}
+                />
               </div>
             </CCol>
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Allowed Scope</CFormLabel>
-                <CFormInput value={scope} onChange={onChangeScope} />
+                <CFormInput
+                  id="scope"
+                  name="scope"
+                  value={client.scope}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="mb-3">
@@ -162,10 +217,11 @@ const View = (props) => {
                   Token Endpoint Auth Method
                 </CFormLabel>
                 <CFormSelect
-                  id="floatingSelect"
+                  id="tokenEndpointAuthMethod"
+                  name="tokenEndpointAuthMethod"
                   aria-label="Floating label select example"
-                  value={tokenEndpointAuthMethod}
-                  onChange={onChangeAuthMethod}
+                  value={client.tokenEndpointAuthMethod}
+                  onChange={handleInputChange}
                 >
                   <option value="client_secret_basic">Client Secret Basic</option>
                   <option value="client_secret_post">Client Secret Post</option>
@@ -174,20 +230,48 @@ const View = (props) => {
 
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Allowed Grant Types</CFormLabel>
-                <CFormTextarea
+                {/* <CFormTextarea
+                  id="grantTypes"
+                  name="grantTypes"
                   rows="5"
-                  value={grantTypes}
-                  onChange={onChangeGrantTypes}
-                ></CFormTextarea>
+                  value={client.grantTypes}
+                  onChange={handleInputChange}
+                ></CFormTextarea> */}
+                <Multiselect
+                  options={[
+                    { key: 'Authorization Code', id: 1 },
+                    { key: 'Password', id: 2 },
+                  ]}
+                  selectedValues={client.grantTypes}
+                  displayValue="key"
+                  onSelect={handleInputChange}
+                />
               </div>
 
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
+                <CFormSelect
+                  id="responseTypes"
+                  name="responseTypes"
+                  aria-label="Floating label select example"
+                  value={client.tokenEndpointAuthMethod}
+                  onChange={handleInputChange}
+                >
+                  <option value="code">Code</option>
+                  <option value="token">Token</option>
+                  <option value="none">None</option>
+                </CFormSelect>
+              </div>
+
+              <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">Redirect URIs</CFormLabel>
                 <CFormTextarea
+                  id="redirectUris"
+                  name="redirectUris"
                   rows="5"
-                  value={responseTypes}
-                  onChange={onChangeResponseTypes}
-                ></CFormTextarea>
+                  value={client.redirectUris}
+                  onChange={handleInputChange}
+                />
               </div>
             </CCol>
           </CRow>

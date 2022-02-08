@@ -71,7 +71,7 @@ const Controller = (props) => {
         return
       }
     })()
-  }, [users])
+  }, [users, csrfToken])
 
   return <View fields={fields} data={users || []} navigateTo={`/${apiEndpoint}`} />
 }

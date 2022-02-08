@@ -48,7 +48,7 @@ const App = () => {
   return (
     <React.Suspense fallback={loading}>
       <Switch>
-        {!isLogin && <Route path="/login" name="Login Page" render={(props) => <Login {...props} />} />}
+        {!isLogin && <Route path="*" name="Login Page" render={(props) => <Login {...props} />} />}
         {!isLogin && (
           <Route
             exact
@@ -62,7 +62,7 @@ const App = () => {
         <Route exact path="/500" name="Page 500" render={(props) => <Page500 {...props} />} />
 
         {isLogin && <Route path="/" name="Home" render={(props) => <DefaultLayout {...props} />} />}
-        {!isLogin && (
+        {isLogin && (
           <Route path="/consent" name="Consent" render={(props) => <Consent {...props} />} />
         )}
       </Switch>

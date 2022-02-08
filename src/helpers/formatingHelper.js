@@ -27,22 +27,25 @@ class Helper {
     return Math.floor(Date.now() / 1000)
   }
 
-  static timestampToDate = (timestamp, format = 'DD/MM/YYYY') => {
+  static timestampToDate = (timestamp, format = 'DD/MM/YYYY', message = 'Không xác định') => {
     let date
     try {
+      if (!timestamp || timestamp === 0) {
+        return message
+      }
       date = moment.unix(timestamp).format(format)
     } catch (error) {
-      return null
+      return message
     }
     return date
   }
 
-  static dateToTimestamp = (date) => {
+  static dateToTimestamp = (date, message = 'Không xác định') => {
     let timestamp
     try {
       timestamp = moment(date).unix()
     } catch (error) {
-      return null
+      return message
     }
 
     return timestamp
@@ -75,26 +78,27 @@ class Helper {
   }
 
   static strToArray = (str, separator = ' ') => {
-    return str ? str.split(separator) : null
+    console.log('str', str)
+    // return !str ? str : str.split(separator)
   }
 
-  static camelToSnakeCase = (str) => {
-    return str
-      ? str
-          .split(/(?=[A-Z])/)
-          .join('_')
-          .toLowerCase()
-      : null
-  }
+  // static camelToSnakeCase = (str) => {
+  //   return str
+  //     ? str
+  //         .split(/(?=[A-Z])/)
+  //         .join('_')
+  //         .toLowerCase()
+  //     : null
+  // }
 
-  static snakeToCamelCase = (str) => {
-    return str
-      ? str
-          .split('_')
-          .map((char) => char[0].toLowerCase())
-          .join('')
-      : ''
-  }
+  // static snakeToCamelCase = (str) => {
+  //   return str
+  //     ? str
+  //         .split('_')
+  //         .map((char) => char[0].toLowerCase())
+  //         .join('')
+  //     : ''
+  // }
 }
 
 export default Helper
