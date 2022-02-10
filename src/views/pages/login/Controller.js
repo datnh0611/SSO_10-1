@@ -1,5 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+// import useHttp from 'src/hooks/use-http'
+// import { post as login } from '../../../helpers/crud-helper'
 import { useDispatch } from 'react-redux'
 import { authActions } from 'src/store/auth-slice'
 import { reqHandler } from 'src/helpers/http-helper'
@@ -7,6 +9,7 @@ import Config from '../../../configs/config'
 import View from './View'
 
 const Controller = () => {
+  const apiEndpoint = 'login'
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -18,11 +21,10 @@ const Controller = () => {
         body: data,
         credentials: 'include',
       })
-      console.log('resp', resp)
       dispatch(authActions.login(resp))
       history.push('/')
     } catch (error) {
-      console.log(error)
+      alert(error)
     }
   }
 

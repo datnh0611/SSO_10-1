@@ -1,5 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import useHttp from 'src/hooks/use-http'
+// import { post } from '../../../helpers/request-helper'
 import { reqHandler } from 'src/helpers/http-helper'
 import Config from '../../../configs/config'
 import View from './View'
@@ -19,8 +21,7 @@ const Controller = () => {
         method: 'POST',
         body: data,
       })
-      console.log('resp', resp)
-      history.push('/')
+      history.push('/login')
     } catch (error) {
       console.log(error)
     }

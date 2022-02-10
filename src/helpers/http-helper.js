@@ -4,7 +4,7 @@ export const reqHandler = async (reqConfig) => {
     method: reqConfig.method || 'GET',
     headers: reqConfig.header || {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': reqConfig.csrfToken,
+      'X-CSRF-TOKEN': reqConfig.csrfToken ? reqConfig.csrfToken : null,
     },
     credentials: reqConfig.credentials ? reqConfig.credentials : 'same-origin',
     mode: reqConfig.mode ? reqConfig.mode : 'cors',

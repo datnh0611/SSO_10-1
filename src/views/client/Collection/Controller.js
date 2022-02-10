@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import useHttp from 'src/hooks/use-http'
 import View from './View'
 import Config from 'src/configs/config'
 import formatingHelper from '../../../helpers/formatingHelper'
-import { reqHandler } from 'src/helpers/http-helper'
+import { getMany } from 'src/helpers/crud-helper'
 
 const Controller = (props) => {
   const apiEndpoint = 'client'
-  const apiPrefix = 'api/v1'
 
   /** STATE */
-  const [clients, setClients] = useState([])
+  const [objs, setObjs] = useState([])
+  const { csrf_token: csrfToken, id: authId } = useSelector((state) => state.auth.user)
 
   const fields = [
     {
@@ -36,42 +38,17 @@ const Controller = (props) => {
     },
   ]
 
+  const { req: _read, data: data } = useHttp(getMany)
+
   useEffect(() => {
-    let isUnmount = true
+    if (!data) {
+      _read(apiEndpoint, null, csrfToken) // endpoint, query, csrfToken
+    } else {
+      setObjs(data['results'])
+    }
+  }, [objs, data, apiEndpoint, csrfToken, _read])
 
-    ;(async () => {
-      try {
-        if (clients.length) {
-          // USE CACHING TECHNIQUE TO OPTIMIZE WEB
-          console.log('Already load clients!')
-          return
-        }
-
-        const data = await reqHandler({
-          url: `${Config.url}/${apiPrefix}/${apiEndpoint}`,
-          credentials: 'include',
-        })
-        if (!isUnmount) {
-          console.log('Component unmounted!')
-          return
-        }
-        // API return []
-        if (!data['results'].length) {
-          return
-        }
-        setClients(data['results'])
-        return () => {
-          // console.log('Clean up func!')
-          isUnmount = false
-        }
-      } catch (error) {
-        console.log(error)
-        return
-      }
-    })()
-  }, [clients, apiPrefix, apiEndpoint])
-
-  return <View fields={fields} data={clients || []} navigateTo={`/${apiEndpoint}`} />
+  return <View fields={fields} data={objs || []} navigateTo={`/${apiEndpoint}`} />
 }
 
 export default Controller

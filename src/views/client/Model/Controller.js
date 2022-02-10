@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import useHttp from 'src/hooks/use-http'
 import { clientObj, clientAttrs } from './Schema.js'
 import formatingHelper from '../../../helpers/formatingHelper'
-import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/request-helper'
+import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/crud-helper'
 import View from './View'
 
 const Controller = (props) => {
@@ -65,7 +65,6 @@ const Controller = (props) => {
         }
       }
     }
-    console.log('result', result)
     return result
   }, [])
 
@@ -85,7 +84,7 @@ const Controller = (props) => {
       const dataHandled = handleData(data)
       setClient(dataHandled)
     }
-  }, [id, apiEndpoint, _read, data, handleData])
+  }, [id, apiEndpoint, data, csrfToken, _read, handleData])
 
   // POST
   const { req: _post } = useHttp(post)

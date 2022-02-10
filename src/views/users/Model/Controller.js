@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import useHttp from 'src/hooks/use-http'
-import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/request-helper'
+import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/crud-helper'
 import Config from '../../../configs/config'
 import View from './View'
 

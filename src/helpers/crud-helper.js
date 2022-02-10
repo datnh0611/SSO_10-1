@@ -3,7 +3,6 @@ import config from '../configs/config'
 
 const { url, apiPrefix } = config
 
-// export const getMany = async (endpoint, query = null) => {
 export const getMany = async (...reqProps) => {
   const [endpoint, query, csrfToken] = reqProps
   const resp = await reqHandler({
