@@ -29,40 +29,21 @@ const App = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const isLogin = useSelector((state) => state.auth.isLogin)
-  const userRedux = useSelector((state) => state.auth)
-  const [currentUser, setCurrentUser] = useState({})
 
-  // useEffect(() => {
-  //   ;(async () => {
-  //     if (isLogin) return
-  //     try {
-  //       const currentUser = await reqHandler({
-  //         url: `${Config.url}/api/v1/current_user`,
-  //       })
-  //       if (!Object.keys(currentUser).length) {
-  //         console.log('Not have current user')
-  //         dispatch(authActions.logout())
-  //         return
-  //       }
-  //       dispatch(authActions.login({ user: currentUser }))
-  //     } catch (error) {
-  //       console.log('Can not get current user!')
-  //       history.push('/login')
-  //     }
-  //   })()
-  // }, [isLogin])
   const { req: _get, data: currentUserData, error } = useHttp(getCurrentUser)
   useEffect(() => {
     if (isLogin) return
 
     const csrfKey = localStorage.getItem('X_CSRF_TOKEN')
-    if (!currentUserData) {
-      console.log('getCurrentUser')
-      _get('current_user', null, csrfKey)
-    } else {
-      dispatch(authActions.reLogin({ ...currentUserData['current_token'] }))
+    if (!csrfKey) {
+      history.push('/login')
+      return
     }
-
+    if (!currentUserData) {
+      _get('current_user', null, csrfKey) // endpoint, query, csrfKey
+    } else {
+      dispatch(authActions.reLogin({ ...currentUserData['current_user'] }))
+    }
     if (error) {
       dispatch(authActions.logout())
       history.push('/login')
@@ -73,8 +54,6 @@ const App = () => {
   return (
     <React.Suspense fallback={loading}>
       <Switch>
-        {/* {!isLogin && <Redirect></Redirect>} */}
-        {/* {console.log('isLogin', isLogin)} */}
         {!isLogin && (
           <Route path="/login" name="Login Page" render={(props) => <Login {...props} />} />
         )}
@@ -89,7 +68,7 @@ const App = () => {
         <Route exact path="/404" name="Page 404" render={(props) => <Page404 {...props} />} />
         <Route exact path="/500" name="Page 500" render={(props) => <Page500 {...props} />} />
         {isLogin && <Route path="/" name="Home" render={(props) => <DefaultLayout {...props} />} />}
-        {!isLogin && (
+        {isLogin && (
           <Route path="/consent" name="Consent" render={(props) => <Consent {...props} />} />
         )}
       </Switch>
