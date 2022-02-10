@@ -20,7 +20,7 @@ const Login = React.lazy(() => import('./views/pages/login/Controller'))
 const Register = React.lazy(() => import('./views/pages/register/Controller'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
-const Consent = React.lazy(() => import('./views/client/Collection/Person2'))
+const Consent = React.lazy(() => import('./views/consent/View'))
 
 const App = () => {
   const dispatch = useDispatch()
@@ -48,7 +48,7 @@ const App = () => {
   return (
     <React.Suspense fallback={loading}>
       <Switch>
-        {!isLogin && <Route path="*" name="Login Page" render={(props) => <Login {...props} />} />}
+        {!isLogin && <Route path="/*" name="Login Page" render={(props) => <Login {...props} />} />}
         {!isLogin && (
           <Route
             exact
@@ -62,7 +62,7 @@ const App = () => {
         <Route exact path="/500" name="Page 500" render={(props) => <Page500 {...props} />} />
 
         {isLogin && <Route path="/" name="Home" render={(props) => <DefaultLayout {...props} />} />}
-        {isLogin && (
+        {!isLogin && (
           <Route path="/consent" name="Consent" render={(props) => <Consent {...props} />} />
         )}
       </Switch>

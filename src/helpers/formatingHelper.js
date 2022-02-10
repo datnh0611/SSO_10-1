@@ -40,10 +40,10 @@ class Helper {
     return date
   }
 
-  static dateToTimestamp = (date, message = 'Không xác định') => {
+  static dateToTimestamp = (date, format = 'DD/MM/YYYY', message = 'Không xác định') => {
     let timestamp
     try {
-      timestamp = moment(date).unix()
+      timestamp = moment(date, format).unix()
     } catch (error) {
       return message
     }
@@ -78,7 +78,7 @@ class Helper {
   }
 
   static strToArray = (str, separator = ' ') => {
-    console.log('str', str)
+    // console.log('str', str)
     // return !str ? str : str.split(separator)
   }
 

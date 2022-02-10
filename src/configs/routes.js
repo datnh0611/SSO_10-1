@@ -47,6 +47,9 @@ const Person1 = React.lazy(() => import('../views/identifier/person1'))
 const Clients = React.lazy(() => import('../views/client/Collection/Controller'))
 const Client = React.lazy(() => import('../views/client/Model/Controller'))
 
+// CONSENT
+const Consent = React.lazy(() => import('../views/consent/Controller'))
+
 // Icons
 const CoreUIIcons = React.lazy(() => import('../views/icons/coreui-icons/CoreUIIcons'))
 const Flags = React.lazy(() => import('../views/icons/flags/Flags'))
@@ -94,11 +97,14 @@ const routes = [
   { path: '/user/:userId', name: 'User', component: User },
   { path: '/user', name: 'User', component: User },
   /*********/
-  /*CLIENT*/
+  /* CLIENT */
   { path: '/clients', name: 'Clients', component: Clients },
   { path: '/client/:clientId', name: 'Client', component: Client },
   { path: '/client', name: 'Client', component: Client },
-  /*****/
+  /*********/
+  /* CONSENT */
+  { path: '/consent', name: 'Consent', component: Consent },
+  /*********/
   { path: '/person1', name: 'Person1', component: Person1 },
   { path: '/forms', name: 'Forms', component: FormControl, exact: true },
   { path: '/forms/form-control', name: 'Form Control', component: FormControl },

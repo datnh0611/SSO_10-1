@@ -30,9 +30,6 @@ const Controller = (props) => {
       field: 'client_secret_expires_at',
       label: 'Ngày hết hạn',
       template: (rowObj) =>
-        // {
-        //   console.log(rowObj)
-        // },
         !rowObj.client_secret_expires_at
           ? 'Vô thời hạn'
           : formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
@@ -64,7 +61,7 @@ const Controller = (props) => {
         }
         setClients(data['results'])
         return () => {
-          console.log('Clean up func!')
+          // console.log('Clean up func!')
           isUnmount = false
         }
       } catch (error) {

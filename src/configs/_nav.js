@@ -200,6 +200,12 @@ const _nav = [
     to: '/clients',
     icon: <CIcon icon={cilBank} customClassName="nav-icon" />,
   },
+  {
+    component: CNavItem,
+    name: 'Trang xác thực',
+    to: '/consent',
+    icon: <CIcon icon={cilBank} customClassName="nav-icon" />,
+  },
   // {
   //   component: CNavGroup,
   //   name: 'Icons',

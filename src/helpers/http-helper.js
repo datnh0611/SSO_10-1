@@ -1,5 +1,5 @@
 export const reqHandler = async (reqConfig) => {
-  console.log('reqConfig', reqConfig)
+  // console.log('reqConfig', reqConfig)
   const request = await fetch(reqConfig.url, {
     method: reqConfig.method || 'GET',
     headers: reqConfig.header || {

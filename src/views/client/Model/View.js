@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import useInput from '../../../hooks/use-input'
-import { clientObj, clientAttrs } from './Schema.js'
-import Multiselect from 'multiselect-react-dropdown'
+import { clientObj, clientAttrs, grantTypesList, responseTypeList } from './Schema.js'
+// import Multiselect from 'multiselect-react-dropdown'
+import Select from 'react-select'
 import {
   CCol,
   CRow,
@@ -14,7 +15,8 @@ import {
   CFormSelect,
   CButtonGroup,
 } from '@coreui/react'
-import formatingHelper from '../../../helpers/formatingHelper'
+// import formatingHelper from '../../../helpers/formatingHelper'
+import { setSubmitData } from 'src/helpers/submit-helper'
 
 const View = (props) => {
   const { data } = props
@@ -28,61 +30,24 @@ const View = (props) => {
     })
   }
 
-  const fetchData = useCallback((data) => {
-    const clientMetadata = JSON.parse(data['_client_metadata'])
-    const result = {}
-    for (const key in clientAttrs) {
-      // get from data
-      if (data.hasOwnProperty(clientAttrs[key].key)) {
-        switch (clientAttrs[key].type) {
-          case 'date': {
-            result[key] = formatingHelper.timestampToDate(data[clientAttrs[key].key])
-            break
-          }
-          case 'list': {
-            // result[key] = data[clientAttrs[key].key]
-            break
-          }
-          case 'number': {
-            // result[key] = data[clientAttrs[key].key]
-            break
-          }
-          default:
-            result[key] = data[clientAttrs[key].key]
-        }
-      }
-      // get from metaData
-      if (clientMetadata.hasOwnProperty(clientAttrs[key].key)) {
-        result[key] = clientMetadata[clientAttrs[key].key]
-      }
-    }
-    return result
-  }, [])
-
   useEffect(() => {
     // console.log('data', data)
+    console.log('client', client)
     if (!Object.keys(data).length) {
       return
     }
-    const clientData = fetchData(data)
-    setClient(clientData)
-  }, [data, fetchData])
+    if (!client) {
+      console.log('Already load Client!')
+      return
+    }
+    setClient(data)
+  }, [data])
 
   const submitHandler = (event) => {
     event.preventDefault()
-    console.log('SUMMITTED')
-    console.log('client.grantTypes', typeof client.grantTypes)
-    // TODO: fix post function in here
-    const submittedData = {
-      client_name: client.clientName,
-      client_uri: client.clientUri,
-      grant_types: formatingHelper.strToArray(client.grantTypes),
-      redirect_uris: formatingHelper.strToArray(client.redirectUris),
-      response_types: formatingHelper.strToArray(client.responseTypes),
-      scope: client.scope,
-      token_endpoint_auth_method: client.tokenEndpointAuthMethod || 'client_secret_basic',
-    }
-
+    // console.log('SUMMITTED')
+    const submittedData = setSubmitData(clientAttrs, client)
+    // console.log('submittedData', submittedData)
     if (!props.paramId) {
       props.onPost(submittedData)
     } else {
@@ -92,14 +57,14 @@ const View = (props) => {
 
   const buttonGroup = [
     {
-      name: 'Quay lại',
+      name: 'Back',
       color: 'secondary',
       className: 'secondary',
       onClick: props.onGoBack,
       visible: true,
     },
     {
-      name: 'Lưu thông tin',
+      name: 'Save',
       color: 'success',
       className: 'success',
       type: 'submit',
@@ -107,7 +72,7 @@ const View = (props) => {
       visible: true,
     },
     {
-      name: 'Xoá thông tin',
+      name: 'Delete',
       color: 'danger',
       className: 'danger',
       // type: 'submit',
@@ -138,17 +103,6 @@ const View = (props) => {
           <CRow className="mb-4">
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="username">Client ID</CFormLabel>
-                <CFormInput
-                  id="clientId"
-                  name="clientId"
-                  value={client.clientId}
-                  onChange={handleInputChange}
-                  disabled={clientAttrs.clientId.disabled}
-                />
-              </div>
-
-              <div className="mb-3">
                 <CFormLabel htmlFor="username">Client Name</CFormLabel>
                 <CFormInput
                   id="clientName"
@@ -157,18 +111,6 @@ const View = (props) => {
                   onChange={handleInputChange}
                 />
               </div>
-
-              <div className="mb-3">
-                <CFormLabel htmlFor="username">Client Secret</CFormLabel>
-                <CFormInput
-                  id="clientSecret"
-                  name="clientSecret"
-                  value={client.clientSecret}
-                  onChange={handleInputChange}
-                  disabled={clientAttrs.clientSecret.disabled}
-                />
-              </div>
-
               <div className="mb-3">
                 <CFormLabel htmlFor="clienturi">Client URI</CFormLabel>
                 <CFormInput
@@ -178,32 +120,55 @@ const View = (props) => {
                   onChange={handleInputChange}
                 />
               </div>
+              {props.paramId && (
+                <>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="username">Client ID</CFormLabel>
+                    <CFormInput
+                      id="clientId"
+                      name="clientId"
+                      value={client.clientId}
+                      onChange={handleInputChange}
+                      disabled={clientAttrs.clientId.disabled}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="username">Client Secret</CFormLabel>
+                    <CFormInput
+                      id="clientSecret"
+                      name="clientSecret"
+                      value={client.clientSecret}
+                      onChange={handleInputChange}
+                      disabled={clientAttrs.clientSecret.disabled}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="username">Issues At</CFormLabel>
+                    <CFormInput
+                      id="issuesAt"
+                      name="issuesAt"
+                      value={client.issuesAt}
+                      onChange={handleInputChange}
+                      disabled={clientAttrs.issuesAt.disabled}
+                    />
+                  </div>
 
-              <div className="mb-3">
-                <CFormLabel htmlFor="username">Issues At</CFormLabel>
-                <CFormInput
-                  id="issuesAt"
-                  name="issuesAt"
-                  value={client.issuesAt}
-                  onChange={handleInputChange}
-                  disabled={clientAttrs.issuesAt.disabled}
-                />
-              </div>
-
-              <div className="mb-3">
-                <CFormLabel htmlFor="username">Expired At</CFormLabel>
-                <CFormInput
-                  id="expiresAt"
-                  name="expiresAt"
-                  value={client.expiresAt}
-                  onChange={handleInputChange}
-                  disabled={clientAttrs.expiresAt.disabled}
-                />
-              </div>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="username">Expired At</CFormLabel>
+                    <CFormInput
+                      id="expiresAt"
+                      name="expiresAt"
+                      value={client.expiresAt}
+                      onChange={handleInputChange}
+                      disabled={clientAttrs.expiresAt.disabled}
+                    />
+                  </div>
+                </>
+              )}
             </CCol>
             <CCol xs={6}>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Scope</CFormLabel>
+                <CFormLabel htmlFor="">Allowed Scope</CFormLabel>
                 <CFormInput
                   id="scope"
                   name="scope"
@@ -211,11 +176,8 @@ const View = (props) => {
                   onChange={handleInputChange}
                 />
               </div>
-
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">
-                  Token Endpoint Auth Method
-                </CFormLabel>
+                <CFormLabel htmlFor="">Token Endpoint Auth Method</CFormLabel>
                 <CFormSelect
                   id="tokenEndpointAuthMethod"
                   name="tokenEndpointAuthMethod"
@@ -225,44 +187,58 @@ const View = (props) => {
                 >
                   <option value="client_secret_basic">Client Secret Basic</option>
                   <option value="client_secret_post">Client Secret Post</option>
+                  <option value="none">None</option>
                 </CFormSelect>
               </div>
-
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Grant Types</CFormLabel>
-                {/* <CFormTextarea
-                  id="grantTypes"
+                <CFormLabel htmlFor="">Allowed Grant Types</CFormLabel>
+                <Select
+                  isMulti
+                  options={grantTypesList}
                   name="grantTypes"
-                  rows="5"
-                  value={client.grantTypes}
-                  onChange={handleInputChange}
-                ></CFormTextarea> */}
-                <Multiselect
-                  options={[
-                    { key: 'Authorization Code', id: 1 },
-                    { key: 'Password', id: 2 },
-                  ]}
-                  selectedValues={client.grantTypes}
-                  displayValue="key"
-                  onSelect={handleInputChange}
+                  // onFocus={handleInputChange}
+                  defaultValue={grantTypesList[0]}
+                  onChange={(value) => {
+                    console.log('grantTypes', value)
+                    setClient((prev) => ({
+                      ...prev,
+                      grantTypes: value.map((option) => option.value),
+                    }))
+                  }}
+                  value={
+                    client.grantTypes
+                      ? client.grantTypes.map((grantType) =>
+                          grantTypesList.find((type) => type.value === grantType),
+                        )
+                      : ''
+                  }
                 />
               </div>
 
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
-                <CFormSelect
-                  id="responseTypes"
+                <Select
+                  isMulti
+                  options={responseTypeList}
                   name="responseTypes"
-                  aria-label="Floating label select example"
-                  value={client.tokenEndpointAuthMethod}
-                  onChange={handleInputChange}
-                >
-                  <option value="code">Code</option>
-                  <option value="token">Token</option>
-                  <option value="none">None</option>
-                </CFormSelect>
+                  // onFocus={handleInputChange}
+                  defaultValue={responseTypeList[0]}
+                  onChange={(value) => {
+                    console.log('responseTypes', value)
+                    setClient((prev) => ({
+                      ...prev,
+                      responseTypes: value.map((option) => option.value),
+                    }))
+                  }}
+                  value={
+                    client.responseTypes
+                      ? client.responseTypes.map((responseType) =>
+                          grantTypesList.find((type) => type.value === responseType),
+                        )
+                      : ''
+                  }
+                />
               </div>
-
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Redirect URIs</CFormLabel>
                 <CFormTextarea
