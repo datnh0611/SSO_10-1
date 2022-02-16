@@ -4,17 +4,7 @@ import PropTypes from 'prop-types'
 import { setSubmitData } from 'src/helpers/submit-helper'
 import { initialObj as userObj, objAttrs as userAttrs } from './Schema.js'
 // import { DatePicker } from '@progress/kendo-react-dateinputs'
-import {
-  CCol,
-  CRow,
-  CButton,
-  CFormInput,
-  CForm,
-  CFormLabel,
-  // CFormTextarea,
-  // CFormSelect,
-  CButtonGroup,
-} from '@coreui/react'
+import { CCol, CRow, CButton, CFormInput, CForm, CFormLabel, CButtonGroup } from '@coreui/react'
 import IdentityView from '../../identities/Model/Controller'
 // import config from '../config'
 

@@ -4,7 +4,8 @@ export const reqHandler = async (reqConfig) => {
     headers: reqConfig.headers || {
       'Content-Type': 'application/json',
       // 'Access-Control-Allow-Credentials': 'true',
-      'X-CSRF-TOKEN': reqConfig.csrfToken ? reqConfig.csrfToken : null,
+      // 'X-CSRF-TOKEN': reqConfig.csrfToken ? reqConfig.csrfToken : null,
+      ...reqConfig.token,
     },
     credentials: reqConfig.credentials ? reqConfig.credentials : 'include', // include, *same-origin, omit
     cache: reqConfig.cache ? reqConfig.cache : 'default',

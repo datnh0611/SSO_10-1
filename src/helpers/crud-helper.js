@@ -4,27 +4,30 @@ import config from '../configs/config'
 const { url: apiAddress, apiPrefix } = config
 
 export const getMany = async ({ ...reqProps }) => {
-  const { apiEndpoint, query } = reqProps
+  const { apiEndpoint, query, token, csrfToken } = reqProps
   const resp = await reqHandler({
     url: `${apiAddress}/${apiPrefix}/${apiEndpoint}` + (query ? `${query}` : ''),
+    token: token || { 'X-CSRF-TOKEN': csrfToken },
     ...reqProps,
   })
   return resp
 }
 
 export const getSingle = async ({ ...reqProps }) => {
-  const { apiEndpoint, query, id } = reqProps
+  const { apiEndpoint, query, id, token, csrfToken } = reqProps
   const resp = await reqHandler({
     url: `${apiAddress}/${apiPrefix}/${apiEndpoint}/${id}` + (query ? `${query}` : ''),
+    token: token || { 'X-CSRF-TOKEN': csrfToken },
     ...reqProps,
   })
   return resp
 }
 
 export const post = async ({ ...reqProps }) => {
-  const { apiEndpoint, query, data } = reqProps
+  const { apiEndpoint, query, data, token, csrfToken } = reqProps
   const resp = await reqHandler({
     url: `${apiAddress}/${apiPrefix}/${apiEndpoint}` + (query ? `${query}` : ''),
+    token: token || { 'X-CSRF-TOKEN': csrfToken },
     method: 'POST',
     body: data,
     ...reqProps,
@@ -33,9 +36,10 @@ export const post = async ({ ...reqProps }) => {
 }
 
 export const putSingle = async ({ ...reqProps }) => {
-  const { apiEndpoint, query, id, data } = reqProps
+  const { apiEndpoint, query, id, data, token, csrfToken } = reqProps
   const resp = await reqHandler({
     url: `${apiAddress}/${apiPrefix}/${apiEndpoint}/${id}` + (query ? `${query}` : ''),
+    token: token || { 'X-CSRF-TOKEN': csrfToken },
     method: 'PUT',
     body: data,
     ...reqProps,
@@ -44,9 +48,10 @@ export const putSingle = async ({ ...reqProps }) => {
 }
 
 export const deleteSingle = async ({ ...reqProps }) => {
-  const { apiEndpoint, query, id } = reqProps
+  const { apiEndpoint, query, id, token, csrfToken } = reqProps
   const resp = await reqHandler({
     url: `${apiAddress}/${apiPrefix}/${apiEndpoint}/${id}` + (query ? `${query}` : ''),
+    token: token || { 'X-CSRF-TOKEN': csrfToken },
     method: 'DELETE',
     ...reqProps,
   })
