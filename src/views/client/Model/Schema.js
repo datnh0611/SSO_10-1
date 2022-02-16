@@ -60,7 +60,7 @@ export const clientAttrs = {
   scope: {
     key: 'scope',
     type: 'string',
-    defaultValue: 'basic',
+    defaultValue: 'profile',
     disabled: false,
   },
   redirectUris: {

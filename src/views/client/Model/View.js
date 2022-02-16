@@ -179,7 +179,7 @@ const View = (props) => {
                   value={client.scope}
                   onChange={handleInputChange}
                 >
-                  <option value="basic">Basic</option>
+                  <option value="profile">Proflie</option>
                   {/* (Name, Email, Gender) */}
                   <option value="detail">Detail</option>
                   {/* (Date of Birth, Phone Number, Address) */}

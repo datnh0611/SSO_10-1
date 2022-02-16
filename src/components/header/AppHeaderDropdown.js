@@ -2,6 +2,7 @@ import React from 'react'
 import {
   CAvatar,
   CBadge,
+  CButton,
   CDropdown,
   CDropdownDivider,
   CDropdownHeader,
@@ -21,10 +22,31 @@ import {
   cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import { reqHandler } from 'src/helpers/http-helper'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { authActions } from 'src/store/auth-slice'
+import config from 'src/configs/config'
 
 const AppHeaderDropdown = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const { csrf_token: csrfToken, id: authId } = useSelector((state) => state.auth.user)
+  const submitHandler = async () => {
+    // console.log('csrfToken', csrfToken)
+    try {
+      const resp = await reqHandler({
+        url: `${config.url}/api/v1/logout`,
+        credentials: 'include',
+        token: { 'X-CSRF-TOKEN': csrfToken },
+      })
+      dispatch(authActions.logout())
+      history.push('/login')
+    } catch (error) {
+      alert(error)
+    }
+  }
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -84,9 +106,9 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem>
           <CIcon icon={cilLockLocked} className="me-2" />
-          Lock Account
+          <CButton onClick={submitHandler}>Logout</CButton>
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
