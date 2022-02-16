@@ -1,7 +1,13 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import useInput from '../../../hooks/use-input'
-import { clientObj, clientAttrs, grantTypesList, responseTypeList } from './Schema.js'
+// import useInput from '../../../hooks/use-input'
+import {
+  clientObj,
+  clientAttrs,
+  grantTypesList,
+  responseTypeList,
+  tokenEndpointAuthMethodList,
+} from './Schema.js'
 // import Multiselect from 'multiselect-react-dropdown'
 import Select from 'react-select'
 import {
@@ -24,20 +30,17 @@ const View = (props) => {
   const [client, setClient] = useState(clientObj)
 
   const handleInputChange = (event) => {
+    console.log('event.target.name', event.target.name, event.target.value)
+    console.log('client', { ...client, [event.target.name]: event.target.value })
     setClient({
       ...client,
       [event.target.name]: event.target.value,
     })
   }
-
+  /** LOAD DATA */
   useEffect(() => {
-    // console.log('data', data)
-    console.log('client', client)
+    // Already load data
     if (!Object.keys(data).length) {
-      return
-    }
-    if (!client) {
-      console.log('Already load Client!')
       return
     }
     setClient(data)
@@ -169,12 +172,20 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="">Allowed Scope</CFormLabel>
-                <CFormInput
+                <CFormSelect
                   id="scope"
                   name="scope"
+                  aria-label="Floating label select example"
                   value={client.scope}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="basic">Basic</option>
+                  {/* (Name, Email, Gender) */}
+                  <option value="detail">Detail</option>
+                  {/* (Date of Birth, Phone Number, Address) */}
+                  <option value="legal">Legal</option>
+                  {/* (ID Number, Register Date) */}
+                </CFormSelect>
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="">Token Endpoint Auth Method</CFormLabel>
@@ -184,11 +195,8 @@ const View = (props) => {
                   aria-label="Floating label select example"
                   value={client.tokenEndpointAuthMethod}
                   onChange={handleInputChange}
-                >
-                  <option value="client_secret_basic">Client Secret Basic</option>
-                  <option value="client_secret_post">Client Secret Post</option>
-                  <option value="none">None</option>
-                </CFormSelect>
+                  options={tokenEndpointAuthMethodList}
+                />
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="">Allowed Grant Types</CFormLabel>
@@ -196,10 +204,8 @@ const View = (props) => {
                   isMulti
                   options={grantTypesList}
                   name="grantTypes"
-                  // onFocus={handleInputChange}
                   defaultValue={grantTypesList[0]}
                   onChange={(value) => {
-                    console.log('grantTypes', value)
                     setClient((prev) => ({
                       ...prev,
                       grantTypes: value.map((option) => option.value),
@@ -214,17 +220,14 @@ const View = (props) => {
                   }
                 />
               </div>
-
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Allowed Response Types</CFormLabel>
+                <CFormLabel htmlFor="">Allowed Response Types</CFormLabel>
                 <Select
                   isMulti
                   options={responseTypeList}
                   name="responseTypes"
-                  // onFocus={handleInputChange}
                   defaultValue={responseTypeList[0]}
                   onChange={(value) => {
-                    console.log('responseTypes', value)
                     setClient((prev) => ({
                       ...prev,
                       responseTypes: value.map((option) => option.value),
@@ -233,7 +236,7 @@ const View = (props) => {
                   value={
                     client.responseTypes
                       ? client.responseTypes.map((responseType) =>
-                          grantTypesList.find((type) => type.value === responseType),
+                          responseTypeList.find((type) => type.value === responseType),
                         )
                       : ''
                   }
@@ -244,7 +247,7 @@ const View = (props) => {
                 <CFormTextarea
                   id="redirectUris"
                   name="redirectUris"
-                  rows="5"
+                  rows="3"
                   value={client.redirectUris}
                   onChange={handleInputChange}
                 />

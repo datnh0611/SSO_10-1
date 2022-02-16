@@ -1,62 +1,68 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+// import { formActions } from 'src/store/form-slice'
 import useHttp from 'src/hooks/use-http'
 import { getSingle, post, putSingle, deleteSingle } from 'src/helpers/crud-helper'
-import Config from '../../../configs/config'
+import userConfig from '../config'
+
 import View from './View'
 
 const Controller = (props) => {
   /** HOOKS */
   const param = useParams()
   const history = useHistory()
+  // const dispatch = useDispatch()
 
   /** API INFO */
-  const apiEndpoint = 'user'
-  const collectionEndpoint = 'users'
+  const { apiEndpoint, collectionEndpoint } = userConfig
   const { userId: id } = param
   const { csrf_token: csrfToken, id: authId } = useSelector((state) => state.auth.user)
 
   /** STATE */
   const [user, setUser] = useState({})
+  const [isFormChanged, setIsFormChanged] = useState(false)
 
+  const changeFormHandle = () => setIsFormChanged(true)
   const goBackHandler = () => history.goBack()
 
   // GET SINGLE
-  const { req: _read, data } = useHttp(getSingle)
+  const { req: _readUser, data: userData } = useHttp(getSingle)
 
   useEffect(() => {
     if (!id) {
       setUser({})
       return
     }
-    /** Tim hieu lai vi sao code the nay? */
-    if (!data) {
-      _read(apiEndpoint, id, csrfToken)
-      console.log('data', data)
+    if (!userData) {
+      _readUser({ apiEndpoint, id, csrfToken })
     } else {
-      setUser(data)
+      setUser(userData)
     }
-  }, [id, apiEndpoint, _read, data, csrfToken])
+  }, [id, apiEndpoint, _readUser, userData, csrfToken])
 
   // POST
   const { req: _post } = useHttp(post)
   const postHandler = async (postData) => {
-    await _post(apiEndpoint, postData, csrfToken)
+    if (isFormChanged) {
+      await _post({ apiEndpoint, data: postData, csrfToken })
+    }
     history.push(`/${collectionEndpoint}`)
   }
 
   // PUT
   const { req: _put } = useHttp(putSingle)
   const putHandler = async (putData) => {
-    await _put(apiEndpoint, id, putData, csrfToken)
+    if (isFormChanged) {
+      await _put({ apiEndpoint, id, data: putData, csrfToken })
+    }
     history.push(`/${collectionEndpoint}`)
   }
 
   // DELETE
   const { req: _delete } = useHttp(deleteSingle)
   const deleteHandler = async () => {
-    await _delete(apiEndpoint, id, csrfToken)
+    await _delete({ apiEndpoint, id, csrfToken })
     history.push(`/${collectionEndpoint}`)
   }
 
@@ -68,6 +74,9 @@ const Controller = (props) => {
       onPut={putHandler}
       onDelete={deleteHandler}
       onGoBack={goBackHandler}
+      isFormChanged={isFormChanged}
+      changeForm={changeFormHandle}
+      // formNotChangedHandler={formNotChangedHandler}
     />
   )
 }

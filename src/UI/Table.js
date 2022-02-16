@@ -12,6 +12,8 @@ import {
 } from '@coreui/react'
 import NoResultNoti from './NoResultNotification'
 
+const nonValue = 'Không có'
+
 const Table = (props) => {
   return (
     <CTable align="middle" className="mb-0 border" hover responsive>
@@ -38,7 +40,7 @@ const Table = (props) => {
                 if (field.hasOwnProperty('template')) {
                   dataView = field['template'](data)
                 } else {
-                  dataView = data[field['field']]
+                  dataView = data[field['field']] ? data[field['field']] : nonValue
                 }
 
                 return (

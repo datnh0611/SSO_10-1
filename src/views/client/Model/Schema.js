@@ -1,3 +1,4 @@
+import formatingHelper from '../../../helpers/formatingHelper'
 export const clientObj = {
   clientId: '',
   clientName: '',
@@ -59,7 +60,7 @@ export const clientAttrs = {
   scope: {
     key: 'scope',
     type: 'string',
-    defaultValue: '',
+    defaultValue: 'basic',
     disabled: false,
   },
   redirectUris: {
@@ -105,3 +106,61 @@ export const responseTypeList = [
   { label: 'Token', value: 'token' },
   { label: 'None', value: 'none' },
 ]
+
+export const tokenEndpointAuthMethodList = [
+  { value: 'client_secret_basic', label: 'Client Secret Basic' },
+  { value: 'client_secret_post', label: 'Client Secret Post' },
+  { value: 'none', label: 'None' },
+]
+
+export const handleData = (data) => {
+  // console.log('data', data)
+  const clientMetadata = JSON.parse(data['_client_metadata'])
+  const result = {}
+  for (const key in clientAttrs) {
+    // get from data
+    if (data.hasOwnProperty(clientAttrs[key].key)) {
+      switch (clientAttrs[key].type) {
+        case 'date': {
+          result[key] = formatingHelper.timestampToDate(data[clientAttrs[key].key])
+          break
+        }
+        // case 'list': {
+        //   break
+        // }
+        // case 'number': {
+        //   break
+        // }
+        default:
+          result[key] = data[clientAttrs[key].key]
+      }
+    }
+    // get from metaData
+    if (clientMetadata.hasOwnProperty(clientAttrs[key].key)) {
+      switch (clientAttrs[key].type) {
+        // case 'date': {
+        //   break
+        // }
+        case 'list': {
+          if (!data[clientAttrs[key].key] instanceof Array) {
+            result[key] = clientMetadata[clientAttrs[key].key].split()
+            break
+          }
+          result[key] = clientMetadata[clientAttrs[key].key]
+          break
+        }
+        // case 'number': {
+        //   break
+        // }
+        default:
+          result[key] = clientMetadata[clientAttrs[key].key]
+      }
+    }
+  }
+  return result
+}
+
+export const crudRequest = async (func, param = null, history, navigateTo) => {
+  await func(param)
+  history.push(navigateTo)
+}

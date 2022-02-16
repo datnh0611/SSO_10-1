@@ -51,6 +51,20 @@ class Helper {
     return timestamp
   }
 
+  static strToDate = (str, format = 'DD/MM/YYYY', message = 'Không xác định') => {
+    if (!str) return null
+    const date = str.slice(0, 2),
+      month = str.slice(2, 4),
+      year = str.slice(4, str.length)
+    console.log('date', `${date}/${month}/${year}`)
+    return `${date}/${month}/${year}`
+  }
+
+  static strToTimestamp = (str, format = 'DD/MM/YYYY', message = 'Không xác định') => {
+    const date = this.strToDate(str, format, message)
+    return this.dateToTimestamp(date, format, message)
+  }
+
   /**
    * DATA FORMATING
    */

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import useHttp from './hooks/use-http'
 import { getMany as getCurrentUser } from './helpers/crud-helper'
 import { useSelector, useDispatch } from 'react-redux'
 import { authActions } from './store/auth-slice'
 import { Route, Switch, useHistory } from 'react-router-dom'
-import { reqHandler } from './helpers/http-helper'
-// import {}
+// import { reqHandler } from './helpers/http-helper'
 import Config from './configs/config'
 import './scss/style.scss'
 
@@ -23,39 +22,39 @@ const Login = React.lazy(() => import('./views/pages/login/Controller'))
 const Register = React.lazy(() => import('./views/pages/register/Controller'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
-const Consent = React.lazy(() => import('./views/consent/View'))
+const Consent = React.lazy(() => import('./views/consent/Controller'))
 
 const App = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const isLogin = useSelector((state) => state.auth.isLogin)
 
-  const { req: _get, data: currentUserData, error } = useHttp(getCurrentUser)
+  const { req: _get, data: currentUser, error } = useHttp(getCurrentUser)
+  const csrfToken = localStorage.getItem('X_CSRF_TOKEN')
   useEffect(() => {
     if (isLogin) return
 
-    const csrfKey = localStorage.getItem('X_CSRF_TOKEN')
-    if (!csrfKey) {
+    if (!csrfToken) {
       history.push('/login')
       return
     }
-    if (!currentUserData) {
-      _get('current_user', null, csrfKey) // endpoint, query, csrfKey
+    if (!currentUser) {
+      _get({ apiEndpoint: 'current_user', csrfToken })
     } else {
-      dispatch(authActions.reLogin({ ...currentUserData['current_user'] }))
+      dispatch(authActions.reLogin({ ...currentUser['current_user'] }))
     }
     if (error) {
       dispatch(authActions.logout())
       history.push('/login')
       return
     }
-  }, [_get, getCurrentUser, currentUserData, isLogin])
+  }, [_get, getCurrentUser, currentUser, isLogin, csrfToken])
 
   return (
     <React.Suspense fallback={loading}>
       <Switch>
         {!isLogin && (
-          <Route path="/login" name="Login Page" render={(props) => <Login {...props} />} />
+          <Route exact path="/login" name="Login Page" render={(props) => <Login {...props} />} />
         )}
         {!isLogin && (
           <Route

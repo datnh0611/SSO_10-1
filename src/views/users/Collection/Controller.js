@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import useHttp from 'src/hooks/use-http'
 import { useSelector } from 'react-redux'
 import View from './View'
-import Config from 'src/configs/config'
+// import Config from 'src/configs/config'
 import formatingHelper from '../../../helpers/formatingHelper'
-import { reqHandler } from 'src/helpers/http-helper'
+// import { reqHandler } from 'src/helpers/http-helper'
 import { getMany } from 'src/helpers/crud-helper'
 
 const Controller = (props) => {
@@ -39,7 +39,7 @@ const Controller = (props) => {
   const { req: _read, data: data } = useHttp(getMany)
   useEffect(() => {
     if (!data) {
-      _read(apiEndpoint, null, csrfToken) // endpoint, query, csrfToken
+      _read({ apiEndpoint, csrfToken }) // endpoint, query, csrfToken
     } else {
       setObjs(data['results'])
     }

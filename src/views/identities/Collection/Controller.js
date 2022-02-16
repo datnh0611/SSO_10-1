@@ -7,7 +7,7 @@ import formatingHelper from '../../../helpers/formatingHelper'
 import { getMany } from 'src/helpers/crud-helper'
 
 const Controller = (props) => {
-  const apiEndpoint = 'client'
+  const apiEndpoint = 'identity'
 
   /** STATE */
   const [objs, setObjs] = useState([])
@@ -15,26 +15,23 @@ const Controller = (props) => {
 
   const fields = [
     {
-      field: 'client_name',
-      label: 'Tên bên thứ ba',
+      field: 'full_name',
+      label: 'Họ tên',
     },
     {
-      field: 'created_at',
-      label: 'Khởi tạo ngày',
-      template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
+      field: 'gender',
+      label: 'Giới tính',
+      // template: (rowObj) => formatingHelper.timestampToDate(rowObj.created_at),
     },
     {
-      field: 'client_id_issued_at',
-      label: 'Ngày tạo mã',
-      template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_id_issued_at),
+      field: 'email',
+      label: 'Email',
+      // template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_id_issued_at),
     },
     {
-      field: 'client_secret_expires_at',
-      label: 'Ngày hết hạn',
-      template: (rowObj) =>
-        !rowObj.client_secret_expires_at
-          ? 'Vô thời hạn'
-          : formatingHelper.timestampToDate(rowObj.client_secret_expires_at),
+      field: 'phone_number',
+      label: 'Số điện thoại',
+      // template: (rowObj) => formatingHelper.timestampToDate(rowObj.client_id_issued_at),
     },
   ]
 
@@ -43,10 +40,12 @@ const Controller = (props) => {
   useEffect(() => {
     if (!data) {
       _read({ apiEndpoint, csrfToken })
-    } else {
-      setObjs(data['results'])
+      return
     }
-  }, [objs, data, apiEndpoint, csrfToken, _read])
+    // TODO: add cache to optimize performance
+    setObjs(data['results'])
+    // }
+  }, [data, apiEndpoint, csrfToken, _read])
 
   return <View fields={fields} data={objs || []} navigateTo={`/${apiEndpoint}`} />
 }

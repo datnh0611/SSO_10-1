@@ -32,9 +32,9 @@ const reducer = (state, action) => {
 const useHttp = (reqFunc) => {
   const [http, dispatchHttp] = useReducer(reducer, initialState)
 
-  const req = useCallback(async (...reqData) => {
+  const req = useCallback(async ({ ...reqData }) => {
     try {
-      const resp = await reqFunc(...reqData)
+      const resp = await reqFunc({ ...reqData })
       dispatchHttp({ type: 'SUCCESS', resp: resp })
     } catch (error) {
       dispatchHttp({

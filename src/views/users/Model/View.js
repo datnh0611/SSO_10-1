@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
-import useInput from 'src/hooks/use-input'
+import React, { useEffect, useState } from 'react'
+// import useInput from 'src/hooks/use-input'
 import PropTypes from 'prop-types'
-import { DatePicker } from '@progress/kendo-react-dateinputs'
+import { setSubmitData } from 'src/helpers/submit-helper'
+import { initialObj as userObj, objAttrs as userAttrs } from './Schema.js'
+// import { DatePicker } from '@progress/kendo-react-dateinputs'
 import {
   CCol,
   CRow,
@@ -9,31 +11,39 @@ import {
   CFormInput,
   CForm,
   CFormLabel,
-  CFormTextarea,
-  CFormSelect,
+  // CFormTextarea,
+  // CFormSelect,
   CButtonGroup,
 } from '@coreui/react'
+import IdentityView from '../../identities/Model/Controller'
+// import config from '../config'
 
 const View = (props) => {
   const { data } = props
 
-  const { value: username, fetchValue: fetchUsername, onChange: onChangeUsername } = useInput()
-  const { value: password, fetchValue: fetchPassword, onChange: onChangePassword } = useInput()
-  // const { value: username, fetchValue: fetchUsername, onChange: onChangeUsername } = useInput()
+  const [user, setUser] = useState({})
+
+  const handleInputChange = (event) => {
+    // Change form state
+    if (!props.isFormChanged) {
+      props.changeForm()
+    }
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    })
+  }
 
   useEffect(() => {
-    if (!Object.keys(data).length) return
-    fetchUsername(data.username)
-  }, [data, fetchUsername])
+    if (!Object.keys(data).length) {
+      return
+    }
+    setUser(data)
+  }, [data])
 
   const submitHandler = (event) => {
     event.preventDefault()
-
-    const submittedData = {
-      username,
-      password,
-    }
-
+    const submittedData = setSubmitData(userAttrs, user)
     if (!props.paramId) {
       props.onPost(submittedData)
     } else {
@@ -43,14 +53,14 @@ const View = (props) => {
 
   const buttonGroup = [
     {
-      name: 'Quay lại',
+      name: 'Back',
       color: 'secondary',
       className: 'secondary',
       onClick: props.onGoBack,
       visible: true,
     },
     {
-      name: 'Lưu thông tin',
+      name: 'Save',
       color: 'success',
       className: 'success',
       type: 'submit',
@@ -58,19 +68,11 @@ const View = (props) => {
       visible: true,
     },
     {
-      name: 'Xoá thông tin',
+      name: 'Delete',
       color: 'danger',
       className: 'danger',
       // type: 'submit',
       onClick: props.onDelete.bind(null, props.paramId),
-      visible: true,
-    },
-    {
-      name: 'QR Code',
-      color: 'dark',
-      className: 'dark',
-      // type: 'submit',
-      // onClick: props.onPost,
       visible: true,
     },
   ]
@@ -98,7 +100,13 @@ const View = (props) => {
             <CCol xs={6}>
               <div className="mb-3">
                 <CFormLabel htmlFor="username">Username</CFormLabel>
-                <CFormInput id="username" value={username} onChange={onChangeUsername} />
+                <CFormInput
+                  id="username"
+                  name="username"
+                  value={user.username}
+                  onChange={handleInputChange}
+                  disabled={userAttrs.username.disabled}
+                />
               </div>
             </CCol>
             <CCol xs={6}>
@@ -106,65 +114,17 @@ const View = (props) => {
                 <CFormLabel htmlFor="password">Password</CFormLabel>
                 <CFormInput
                   id="password"
+                  name="password"
                   type="password"
-                  value={password}
-                  disabled={props.paramId}
-                  onChange={onChangePassword}
+                  value={user.password}
+                  disabled={userAttrs.password.disabled}
+                  onChange={handleInputChange}
                 />
               </div>
             </CCol>
           </CRow>
-          <CRow>
-            <h2 className="mb-3">Thông tin người dùng</h2>
-            <CCol xs={6}>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">ID Number</CFormLabel>
-                <CFormInput />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Previous ID Number</CFormLabel>
-                <CFormInput />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Date Register</CFormLabel>
-                {/* <DatePickers /> */}
-                <>
-                  <div className="k-my-4">
-                    <DatePicker format="dd-MM-yyyy" />
-                  </div>
-                </>
-              </div>
-            </CCol>
-            <CCol xs={6}>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Full Name</CFormLabel>
-                <CFormInput />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Gender</CFormLabel>
-                <CFormSelect id="floatingSelect" aria-label="Floating label select example">
-                  <option>Open this select menu</option>
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
-                  <option value="3">Other</option>
-                </CFormSelect>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Date of Birth</CFormLabel>
-                {/* <DatePickers /> */}
-                <>
-                  <div className="k-my-4">
-                    <DatePicker format="dd-MM-yyyy" />
-                  </div>
-                </>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Address</CFormLabel>
-                <CFormTextarea id="exampleFormControlTextarea1" rows="3"></CFormTextarea>
-              </div>
-            </CCol>
-          </CRow>
         </CForm>
+        <IdentityView userId={props.paramId} />
       </CCol>
     </>
   )
@@ -177,6 +137,9 @@ View.propTypes = {
   onPost: PropTypes.func.isRequired,
   onPut: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  isFormChanged: PropTypes.bool,
+  changeForm: PropTypes.func,
+  // formNotChangedHandler: PropTypes.func,
 }
 
 export default View
